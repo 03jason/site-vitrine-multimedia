@@ -1,0 +1,22 @@
+2 /07 remise final
+
+on ne modifie pas la base de donnée
+Site vitrine (c'est quoi précisément)
+
+afficher produit dispo (6 produits)
+name,pic,price,note client
+
+formulaire non fonctionnel
+liens qui mènent ailleurs, non focntionnel
+
+Le front doit être Responsive 
+
+
+On peut se loger 
+Gérant peut voir toutes les infos du produit 
+crud presque complet
+
+On peut modifier les images
+
+
+Avoir une petite bibliothèque Front et Back

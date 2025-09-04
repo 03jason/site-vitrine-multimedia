@@ -1,0 +1,2825 @@
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+
+
+
+.sort-button {
+    background-color: #f0f0f0; /* Couleur de fond par défaut */
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 4px;
+    display: inline-flex; /* Pour aligner le texte et la flèche */
+    align-items: center;
+    gap: 5px; /* Espace entre le texte et la flèche */
+    transition: background-color 0.2s, border-color 0.2s; /* Transition douce */
+}
+
+.sort-button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Style pour le bouton actif (le dernier cliqué) */
+.sort-button.active {
+    background-color: #007bff; /* Couleur de fond bleue */
+    color: white; /* Texte blanc */
+    border-color: #007bff;
+}
+
+/* Style pour la flèche */
+.sort-button .arrow {
+    display: inline-block; /* Pour pouvoir appliquer des transformations si besoin, bien que non nécessaire ici */
+    transition: transform 0.2s; /* Pour une rotation douce si tu utilisais une image par exemple */
+}
+
+
+
+
+/* Styles de la navbar existante (pour référence si besoin, sinon tu les as déjà) */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.navbar .logo {
+    height: 40px; /* Ajuste selon ton logo */
+}
+
+.navbar-left .menu-toggle,
+.navbar-right .icon-button,
+.navbar-right .lang-button {
+    background: none;
+    border: none;
+    color: #135474;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.navbar-right .auth-dropdown {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 20px; /* Aligner à droite de la navbar */
+    top: 60px; /* Juste en dessous de la navbar */
+    flex-direction: column;
+}
+
+.navbar-right .auth-dropdown.show {
+    display: flex;
+}
+
+.navbar-right .auth-dropdown .auth-button {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    background-color: #f9f9f9;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+}
+
+.navbar-right .auth-dropdown .auth-button:hover {
+    background-color: #ddd;
+}
+
+.navbar-right .user-auth-wrapper {
+    position: relative; /* Pour positionner le dropdown par rapport à l'icône utilisateur */
+}
+
+
+/* --- NOUVEAUX STYLES POUR LE SIDENAV --- */
+.sidenav {
+    height: 100%; /* Pleine hauteur */
+    width: 0; /* 0 de largeur par défaut (caché) */
+    position: fixed; /* Reste en place même au scroll */
+    z-index: 1000; /* Plus haut que tout le reste */
+    top: 0;
+    left: 0;
+    background-color: #111; /* Couleur de fond sombre */
+    overflow-x: hidden; /* Désactive le défilement horizontal */
+    transition: 0.3s; /* Transition pour une ouverture/fermeture en douceur */
+    padding-top: 60px; /* Espace en haut pour le bouton de fermeture */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.3); /* Légère ombre */
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px; /* Espacement intérieur */
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181; /* Couleur du texte des liens */
+    display: block; /* Chaque lien sur une nouvelle ligne */
+    transition: 0.2s; /* Transition pour le survol */
+}
+
+.sidenav a:hover {
+    color: #f1f1f1; /* Couleur du texte au survol */
+    background-color: #555; /* Couleur de fond au survol */
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    color: #f1f1f1; /* Couleur du bouton de fermeture */
+}
+
+/* Styles pour la superposition (overlay) */
+.sidenav-overlay {
+    display: none; /* Caché par défaut */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Semi-transparent noir */
+    z-index: 999; /* Moins que le sidenav, plus que le reste */
+    opacity: 0; /* Initialement transparent */
+    transition: opacity 0.3s ease-in-out; /* Transition pour le fondu */
+}
+
+/* Styles de la Modale */
+.modal {
+    display: none; /* Cachée par défaut */
+    position: fixed; /* Reste en place même au scroll */
+    z-index: 1001; /* Doit être au-dessus de tout le reste */
+    left: 0;
+    top: 0;
+    width: 100%; /* Pleine largeur */
+    height: 100%; /* Pleine hauteur */
+    overflow: auto; /* Permet le scroll si le contenu dépasse */
+    background-color: rgba(0,0,0,0.7); /* Fond semi-transparent noir */
+    padding-top: 60px; /* Espace pour le contenu */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 5% du haut, centré horizontalement */
+    padding: 25px;
+    border: 1px solid #888;
+    width: 80%; /* Largeur de la modale */
+    max-width: 700px; /* Largeur maximale pour ne pas être trop grande sur grands écrans */
+    border-radius: 10px;
+    position: relative; /* Pour positionner le bouton de fermeture */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+}
+
+/* Animation d'apparition de la modale */
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Styles pour le formulaire dans la modale */
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.modal-content .form-group {
+    margin-bottom: 15px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content textarea {
+    width: calc(100% - 22px); /* 100% moins padding et border */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.modal-content textarea {
+    resize: vertical; /* Permet de redimensionner verticalement */
+}
+
+.modal-content .submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    display: block; /* Prend toute la largeur */
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.modal-content .submit-button:hover {
+    background-color: #0056b3;
+}
+
+/* Styles de la Modale */
+.modal {
+    display: none; /* Cachée par défaut */
+    position: fixed; /* Reste en place même au scroll */
+    z-index: 1001; /* Doit être au-dessus de tout le reste */
+    left: 0;
+    top: 0;
+    width: 100%; /* Pleine largeur */
+    height: 100%; /* Pleine hauteur */
+    overflow: auto; /* Permet le scroll si le contenu dépasse */
+    background-color: rgba(0,0,0,0.7); /* Fond semi-transparent noir */
+    padding-top: 60px; /* Espace pour le contenu */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 5% du haut, centré horizontalement */
+    padding: 25px;
+    border: 1px solid #888;
+    width: 80%; /* Largeur de la modale */
+    max-width: 700px; /* Largeur maximale pour ne pas être trop grande sur grands écrans */
+    border-radius: 10px;
+    position: relative; /* Pour positionner le bouton de fermeture */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+}
+
+/* Animation d'apparition de la modale */
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Styles pour le formulaire dans la modale */
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.modal-content .form-group {
+    margin-bottom: 15px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content textarea {
+    width: calc(100% - 22px); /* 100% moins padding et border */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.modal-content textarea {
+    resize: vertical; /* Permet de redimensionner verticalement */
+}
+
+.modal-content .submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    display: block; /* Prend toute la largeur */
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.modal-content .submit-button:hover {
+    background-color: #0056b3;
+}
+
+/* --- FOOTER STYLES --- */
+.site-footer {
+    background-color: #222; /* Fond sombre pour le footer */
+    color: #f1f1f1; /* Texte clair */
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+    margin-top: 50px; /* Espace au-dessus du footer */
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap; /* Permet aux sections de passer à la ligne sur petits écrans */
+    justify-content: space-around;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 30px; /* Espace entre les sections */
+}
+
+.footer-section {
+    flex: 1; /* Chaque section prend une part égale de l'espace disponible */
+    min-width: 250px; /* Largeur minimale avant de passer à la ligne */
+    margin-bottom: 20px; /* Espacement en bas pour la responsivité */
+}
+
+.footer-section h3 {
+    color: #007bff; /* Couleur d'accentuation pour les titres */
+    margin-bottom: 20px;
+    font-size: 1.3em;
+    border-bottom: 2px solid #0056b3; /* Soulignement léger */
+    padding-bottom: 5px;
+    display: inline-block; /* Pour que le soulignement ne prenne pas toute la largeur */
+}
+
+.footer-section p {
+    font-size: 0.95em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Newsletter Form */
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+}
+
+.newsletter-form input[type="email"] {
+    flex-grow: 1; /* Prend l'espace restant */
+    padding: 10px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #333;
+    color: #f1f1f1;
+    font-size: 0.95em;
+}
+
+.newsletter-form input[type="email"]::placeholder {
+    color: #bbb;
+}
+
+.newsletter-form button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background-color 0.2s ease;
+}
+
+.newsletter-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Social Media Icons */
+.social-icons a {
+    color: #f1f1f1;
+    font-size: 1.8em;
+    margin-right: 15px;
+    transition: color 0.2s ease;
+}
+
+.social-icons a:hover {
+    color: #007bff; /* Changement de couleur au survol */
+}
+
+/* Contact Button */
+.contact-button {
+    display: inline-block;
+    background-color: #28a745; /* Vert pour le bouton contact */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    text-align: center;
+}
+
+.contact-button:hover {
+    background-color: #218838;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #333; /* Ligne de séparation */
+    font-size: 0.85em;
+    color: #bbb;
+}
+
+/* Media Queries pour la responsivité */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column; /* Sections empilées */
+        align-items: center; /* Centrer les éléments */
+        text-align: center;
+    }
+
+    .footer-section {
+        min-width: unset; /* Annuler la min-width */
+        width: 100%; /* Prend toute la largeur */
+    }
+
+    .newsletter-form {
+        flex-direction: column; /* Input et bouton empilés */
+        align-items: center;
+    }
+
+    .newsletter-form input[type="email"],
+    .newsletter-form button {
+        width: 80%; /* Ajuster la largeur des éléments du formulaire */
+        max-width: 300px;
+    }
+
+    .social-icons a {
+        margin: 0 10px; /* Ajuster l'espacement des icônes */
+    }
+
+    .footer-section h3 {
+        display: block; /* Pour centrer le texte */
+        border-bottom: none; /* Retirer le soulignement sur mobile */
+        padding-bottom: 0;
+    }
+}
+
+/* --- NOUVEAUX STYLES POUR LA MODALE D'ÉDITION --- */
+
+/* Conteneur principal de la modale */
+.modal {
+    display: none; /* Cachée par défaut */
+    position: fixed; /* Fixée sur la page, ne scroll pas */
+    z-index: 1001; /* Au-dessus de tout le reste */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permet le défilement si le contenu dépasse */
+    background-color: rgba(0,0,0,0.6); /* Fond semi-transparent plus doux */
+    display: flex; /* Utilise flexbox pour centrer le contenu */
+    justify-content: center; /* Centrage horizontal */
+    align-items: center; /* Centrage vertical */
+}
+
+/* Contenu de la modale */
+.modal-content {
+    background-color: #ffffff; /* Fond blanc pur */
+    margin: auto; /* Centrage classique (pour le fallback ou si align-items ne suffit pas) */
+    padding: 30px; /* Plus de padding */
+    border-radius: 12px; /* Bords plus arrondis */
+    width: 90%; /* Prend plus de largeur sur petits écrans */
+    max-width: 650px; /* Largeur maximale pour les grands écrans */
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25); /* Ombre plus prononcée */
+    animation: fadeIn 0.3s ease-out; /* Animation d'apparition */
+    box-sizing: border-box; /* S'assure que padding ne déborde pas */
+}
+
+/* Animation d'apparition */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Bouton de fermeture (X) */
+.close-button {
+    color: #666;
+    float: right;
+    font-size: 32px; /* Plus grand */
+    font-weight: normal; /* Moins gras */
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #333; /* Changement de couleur au survol */
+    text-decoration: none;
+}
+
+/* Titre de la modale */
+.modal-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px; /* Plus d'espace sous le titre */
+    font-size: 2em; /* Taille ajustée */
+    font-weight: 600; /* Plus de poids */
+    border-bottom: 2px solid #e0e0e0; /* Une ligne de séparation douce */
+    padding-bottom: 15px;
+}
+
+/* Groupes de formulaires (label + input/textarea) */
+.form-group {
+    margin-bottom: 20px; /* Plus d'espace entre les groupes */
+}
+
+/* Labels des champs de formulaire */
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #444;
+    font-size: 1em;
+}
+
+/* Champs de texte et numériques */
+.form-input,
+.form-textarea {
+    width: 100%; /* Prend toute la largeur disponible */
+    padding: 12px 15px; /* Plus de padding */
+    border: 1px solid #dcdcdc; /* Bordure plus claire */
+    border-radius: 6px; /* Bords légèrement plus arrondis */
+    font-size: 1em;
+    box-sizing: border-box; /* Très important pour inclure padding/border dans la largeur */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Transitions douces */
+    background-color: #fcfcfc; /* Fond légèrement différent */
+    color: #333;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    border-color: #007bff; /* Bordure bleue au focus */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Ombre de focus subtile */
+    outline: none; /* Supprime l'outline par défaut du navigateur */
+}
+
+/* Textarea spécifique */
+.form-textarea {
+    resize: vertical; /* Permet seulement le redimensionnement vertical */
+    min-height: 100px; /* Hauteur minimale */
+}
+
+/* Groupe pour l'image actuelle et l'upload */
+.image-upload-group {
+    border: 1px dashed #cccccc; /* Bordure pointillée pour la zone d'upload */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center; /* Centrer le contenu du groupe */
+    background-color: #f9f9f9;
+}
+
+.current-image-preview {
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0; /* Encadrement de l'image actuelle */
+    padding: 5px;
+    border-radius: 8px;
+    display: inline-block; /* Pour que l'encadrement s'adapte à l'image */
+}
+
+.current-image-preview img {
+    max-width: 120px; /* Plus petite image dans la prévisualisation */
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    margin: 0 auto; /* Centrer l'image */
+}
+
+.file-input-label {
+    margin-top: 15px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #555;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    display: inline-block; /* Pour qu'il ressemble à un bouton */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.file-input-label:hover {
+    background-color: #e0e0e0;
+    border-color: #bbb;
+}
+
+.file-input {
+    display: none; /* Cache l'input type="file" par défaut, on utilise le label */
+}
+
+/* Boutons de soumission et primaire */
+.primary-button {
+    background-color: #007bff; /* Bleu primaire */
+    color: white;
+    padding: 14px 25px; /* Plus grand */
+    border: none;
+    border-radius: 8px; /* Bords plus arrondis */
+    font-size: 1.1em;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 25px; /* Plus d'espace au-dessus */
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Transition pour l'animation */
+    font-weight: 600; /* Plus de poids */
+    letter-spacing: 0.5px;
+}
+
+.primary-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Léger effet de soulèvement */
+}
+
+.primary-button:active {
+    transform: translateY(0); /* Retour à la position normale */
+}
+
+/* Responsive pour la modale */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%; /* Plus de largeur sur les petits écrans */
+        margin: 20px auto; /* Marge supérieure réduite */
+        padding: 20px;
+    }
+
+    .modal-title {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+
+    .form-input,
+    .form-textarea {
+        padding: 10px 12px;
+    }
+
+    .primary-button {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+
+    .close-button {
+        font-size: 28px;
+        right: 10px;
+        top: 5px;
+    }
+}
+
+/* --- Styles Généraux pour les Pages de Liste (ex: listAllProductAdmin.php) --- */
+
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    box-sizing: border-box; /* Inclure le padding dans la largeur */
+}
+
+.page-title {
+    text-align: center;
+    color: #333;
+    font-size: 2.8em;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 15px;
+}
+
+/* Section Ajouter un produit */
+.add-product-section {
+    text-align: right; /* Aligner le bouton à droite */
+    margin-bottom: 30px;
+}
+
+/* Styles pour les boutons génériques (si non déjà définis) */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    text-align: center;
+}
+
+/* Bouton primaire (pour "Ajouter un produit") */
+.primary-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.primary-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+/* Styles pour les tableaux */
+.table-responsive {
+    overflow-x: auto; /* Permet le défilement horizontal sur petits écrans */
+    margin-bottom: 50px;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse; /* Supprime les espaces entre les cellules */
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Ombre douce */
+    border-radius: 8px; /* Bords arrondis pour le tableau */
+    overflow: hidden; /* Important pour que les bords arrondis soient visibles */
+}
+
+.product-table th,
+.product-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0; /* Ligne de séparation claire */
+}
+
+.product-table thead th {
+    background-color: #f2f2f2; /* Fond pour l'en-tête */
+    color: #333;
+    font-weight: bold;
+    position: sticky; /* Rendre l'en-tête collant lors du scroll */
+    top: 0;
+    z-index: 1; /* Pour qu'il reste au-dessus du contenu */
+}
+
+.product-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Rayures alternées pour faciliter la lecture */
+}
+
+.product-table tbody tr:hover {
+    background-color: #eaf6ff; /* Effet de survol sur les lignes */
+}
+
+/* Styles pour les boutons de tri dans les en-têtes de tableau */
+.sort-button {
+    background: none;
+    border: none;
+    color: inherit; /* Utilise la couleur du texte parent */
+    cursor: pointer;
+    font-size: 0.9em; /* Plus petit que le texte de l'en-tête */
+    padding: 0 5px;
+    vertical-align: middle; /* Aligner avec le texte */
+    outline: none; /* Supprimer l'outline au focus */
+    transition: color 0.2s ease;
+}
+
+.sort-button:hover {
+    color: #007bff;
+}
+
+.sort-button .arrow {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 0.8em; /* Taille de la flèche */
+    transition: transform 0.2s ease;
+}
+
+/* Styles pour les boutons d'action dans le tableau */
+.action-button {
+    padding: 6px 12px;
+    font-size: 0.85em;
+    margin-right: 5px;
+    border-radius: 4px;
+}
+
+.edit-button {
+    background-color: #007bff; /* Bleu pour "Modifier" */
+    color: white;
+    border: none;
+}
+
+.edit-button:hover {
+    background-color: #0056b3;
+}
+
+.delete-button {
+    background-color: #dc3545; /* Rouge pour "Supprimer" */
+    color: white;
+    border: none;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+/* Responsive design pour les tableaux sur petits écrans */
+@media (max-width: 768px) {
+    .product-table, .product-table tbody, .product-table tr, .product-table td {
+        display: block; /* Empile les cellules comme des blocs */
+        width: 100%;
+    }
+
+    .product-table thead {
+        display: none; /* Cache l'en-tête du tableau sur mobile */
+    }
+
+    .product-table tr {
+        margin-bottom: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .product-table td {
+        text-align: right; /* Aligne le contenu des cellules à droite */
+        padding-left: 50%; /* Espace pour le label */
+        position: relative;
+    }
+
+    .product-table td::before {
+        content: attr(data-label); /* Utilise l'attribut data-label pour afficher le titre de la colonne */
+        position: absolute;
+        left: 15px;
+        width: calc(50% - 30px);
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        text-align: left;
+        color: #555;
+    }
+
+    /* Ajustement des boutons sur mobile */
+    .action-button {
+        display: block;
+        width: calc(100% - 10px); /* Prend presque toute la largeur de la cellule */
+        margin: 5px auto;
+    }
+
+    .add-product-section {
+        text-align: center; /* Centre le bouton Ajouter sur mobile */
+        margin-bottom: 20px;
+    }
+}
+
+/* --- Palette de couleurs ---
+#000000 - Noir
+#135474 - Bleu foncé
+#39AEB3 - Turquoise
+#D0E2E5 - Gris très clair / Bleu très pâle
+#FFFFFF - Blanc
+#86B9BE - Bleu-vert pâle
+*/
+
+/* ... (Votre CSS existant avant cette section) ... */
+
+/* --- Section 2: Best Products Section --- */
+.best-products-section {
+    padding: 80px 0;
+    background-color: #f8f8f8; /* Conservez ce fond pour la section complète */
+}
+
+.products-grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.product-grid {
+    flex: 2; /* Prend plus d'espace (ex: 2/3 de la largeur) */
+    display: grid;
+    /* La clé est ici : 3 colonnes flexibles, si l'espace le permet */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px; /* Espacement entre les cartes produits */
+}
+
+.no-products-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 30px;
+    font-size: 1.2em;
+    color: #666;
+    background-color: #D0E2E5;
+    border-radius: 8px;
+}
+
+/* MODIFICATION ICI pour la sidebar */
+.best-products-sidebar {
+    flex: 1; /* Prend moins d'espace (ex: 1/3 de la largeur) */
+    background-color: transparent; /* PAS DE FOND COLORÉ */
+    padding: 30px; /* Conservez le padding pour l'espace interne */
+    border-radius: 10px;
+    box-shadow: none; /* PAS D'OMBRE */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre le contenu verticalement dans la sidebar */
+    text-align: center;
+}
+
+.best-products-sidebar .sidebar-title {
+    font-size: 2em;
+    color: #135474; /* Bleu foncé pour le titre, comme demandé */
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.best-products-sidebar .sidebar-description {
+    font-size: 1.1em;
+    color: #000000; /* Noir pour le texte, ou un gris très foncé */
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.best-products-sidebar .view-all-button {
+    /* Utilise les styles de primary-button définis plus haut */
+    /* Assurez-vous que primary-button a bien un fond turquoise #39AEB3 */
+    padding: 12px 25px; /* Légèrement plus petit que le hero-button */
+    font-size: 1em;
+}
+
+/* ... (Votre CSS existant après cette section, y compris les media queries) ... */
+
+/* Responsive Adjustments pour la sidebar */
+@media (max-width: 992px) {
+    .best-products-sidebar {
+        /* Garde ces règles si vous voulez qu'elle prenne toute la largeur sur mobile */
+        flex: none;
+        width: 100%;
+        margin-top: 40px;
+        /* Sur mobile, on peut remettre un fond subtil si le design le permet, ou le laisser transparent */
+        background-color: transparent; /* Toujours transparent pour l'instant */
+        box-shadow: none;
+    }
+}
+/* Les autres media queries existantes sont toujours valides */
+
+
+/* --- Palette de couleurs ---
+#000000 - Noir
+#135474 - Bleu foncé
+#39AEB3 - Turquoise
+#D0E2E5 - Gris très clair / Bleu très pâle
+#FFFFFF - Blanc
+#86B9BE - Bleu-vert pâle
+*/
+
+/* --- Styles Généraux pour la page de liste de produits --- */
+.product-list-page {
+    padding: 40px 0;
+    background-color: #f8f8f8; /* Fond léger pour la page */
+}
+
+.page-title {
+    color: #135474; /* Bleu foncé */
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.8em;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background-color: #39AEB3; /* Turquoise */
+    border-radius: 5px;
+}
+
+/* --- Bouton "Passer en version Admin" --- */
+.admin-switch-button-container {
+    text-align: right; /* Aligne le bouton à droite */
+    margin-bottom: 20px;
+}
+
+.admin-switch-button {
+    background-color: #86B9BE; /* Bleu-vert pâle */
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.admin-switch-button:hover {
+    background-color: #135474; /* Bleu foncé au survol */
+    color: #FFFFFF;
+}
+
+.admin-switch-button i {
+    margin-right: 8px; /* Espacement entre l'icône et le texte */
+}
+
+/* --- Section de Tri et Filtrage --- */
+.sort-filter-section {
+    background-color: #FFFFFF;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap; /* Pour la responsivité */
+    gap: 20px; /* Espacement entre les éléments */
+    align-items: center;
+    justify-content: center; /* Centre le contenu si l'espace le permet */
+}
+
+.sort-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    width: 100%; /* Prend toute la largeur disponible */
+    justify-content: center;
+}
+
+.sort-form label {
+    font-weight: 600;
+    color: #135474; /* Bleu foncé */
+    font-size: 0.95em;
+    margin-right: 5px;
+}
+
+.form-select {
+    padding: 8px 12px;
+    border: 1px solid #D0E2E5; /* Gris très clair */
+    border-radius: 5px;
+    font-size: 1em;
+    color: #333;
+    background-color: #FFFFFF;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    -webkit-appearance: none; /* Supprime le style par défaut sur WebKit */
+    -moz-appearance: none;    /* Supprime le style par défaut sur Mozilla */
+    appearance: none;         /* Supprime le style par défaut */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%2339AEB3" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 20px;
+    min-width: 150px; /* Largeur minimale pour les selects */
+}
+
+.form-select:focus {
+    border-color: #39AEB3; /* Turquoise au focus */
+    box-shadow: 0 0 0 0.2rem rgba(57, 174, 179, 0.25); /* Ombre légère de la couleur accent */
+    outline: none;
+}
+
+.apply-sort-button {
+    /* Utilise les styles de primary-button */
+    padding: 8px 20px;
+    font-size: 0.95em;
+    min-width: 100px;
+}
+
+
+/* --- Conteneur des cartes de produits --- */
+.product-cards-container {
+    display: grid;
+    /* 4 colonnes sur les grands écrans, flexibles */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px; /* Espacement entre les cartes */
+    padding: 20px 0;
+}
+
+/* Message si aucun produit trouvé */
+.no-products-found-message {
+    grid-column: 1 / -1; /* S'étend sur toutes les colonnes */
+    text-align: center;
+    padding: 50px;
+    font-size: 1.3em;
+    color: #555;
+    background-color: #D0E2E5;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+
+/* --- Responsive Design pour la page de liste --- */
+@media (max-width: 992px) {
+    .page-title {
+        font-size: 2.2em;
+    }
+    .product-cards-container {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Peut passer à 3 ou 2 colonnes */
+    }
+    .sort-filter-section {
+        flex-direction: column; /* Empile les éléments du formulaire */
+        align-items: flex-start; /* Aligne à gauche les éléments empilés */
+    }
+    .sort-form {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .sort-form label,
+    .form-select,
+    .apply-sort-button {
+        width: 100%; /* Prend toute la largeur disponible */
+        min-width: unset;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2em;
+        margin-bottom: 30px;
+    }
+    .product-cards-container {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Peut passer à 2 colonnes */
+        gap: 20px;
+    }
+    .admin-switch-button-container {
+        text-align: center; /* Centre le bouton admin sur mobile */
+    }
+    .sort-filter-section {
+        padding: 15px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.8em;
+    }
+    .product-cards-container {
+        grid-template-columns: 1fr; /* Une seule colonne sur très petits écrans */
+        gap: 15px;
+    }
+    .no-products-found-message {
+        padding: 30px 15px;
+        font-size: 1.1em;
+    }
+}
+
+/* Assurez-vous que vos styles pour .product-card, .product-card-image, etc. sont définis pour carteProduitBase.php */
+/* (Ce sont les mêmes que ceux que je vous ai déjà fournis pour l'index) */
+
+/* --- Palette de couleurs ---
+#000000 - Noir
+#135474 - Bleu foncé
+#39AEB3 - Turquoise
+#D0E2E5 - Gris très clair / Bleu très pâle
+#FFFFFF - Blanc
+#86B9BE - Bleu-vert pâle
+*/
+
+/* --- Styles Généraux pour les Boutons Personnalisés --- */
+/* Pour les boutons génériques sur la carte (Ajouter au Panier, Voir Détails, etc.) */
+.btn.custom-action-button { /* Utilisation de .btn en plus si vous avez des styles généraux .btn */
+    background-color: #39AEB3; /* Turquoise */
+    color: #FFFFFF;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%; /* Prend toute la largeur de son conteneur */
+    box-sizing: border-box; /* Inclut padding et bordure dans la largeur */
+}
+
+.btn.custom-action-button:hover {
+    background-color: #135474; /* Bleu foncé */
+    transform: translateY(-2px);
+}
+
+/* Si vous réintroduisez un bouton "Voir détails" */
+.btn.custom-details-button {
+    background-color: #86B9BE; /* Bleu-vert pâle */
+    color: #FFFFFF;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px; /* Espace si un autre bouton est au-dessus */
+}
+
+.btn.custom-details-button:hover {
+    background-color: #135474;
+    transform: translateY(-2px);
+}
+
+
+/* --- Styles pour les cartes de produits (custom-product-card) --- */
+.custom-product-card {
+    background-color: #FFFFFF;
+    border-radius: 12px; /* Coins plus arrondis */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Ombre plus prononcée */
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* Important pour que toutes les cartes aient la même hauteur dans la grille */
+    position: relative; /* Pour le positionnement des éléments internes */
+    padding-bottom: 20px; /* Espace pour le contenu et les boutons */
+}
+
+.custom-product-card:hover {
+    transform: translateY(-8px); /* Soulèvement plus marqué */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.product-card-image-wrapper {
+    width: 100%;
+    height: 220px; /* Hauteur fixe pour l'espace image */
+    overflow: hidden; /* Masque ce qui dépasse */
+    display: flex; /* Utilise flexbox pour centrer l'image */
+    justify-content: center;
+    align-items: center;
+    background-color: #D0E2E5; /* Fond par défaut si image lente à charger */
+    border-bottom: 1px solid #eee;
+}
+
+.product-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* L'image s'adapte sans être coupée, mais prendra la taille max */
+    /* Alternative si vous voulez que l'image remplisse l'espace et soit coupée si nécessaire : */
+    /* object-fit: cover; */
+    /* Si object-fit: cover; est utilisé, l'image sera coupée si ses proportions ne correspondent pas. */
+    /* Avec object-fit: contain;, l'image entière est visible, des barres peuvent apparaître. */
+    /* Choisissez celle qui convient le mieux à vos images et à votre design */
+    object-position: center; /* Centre l'image dans son conteneur */
+    display: block; /* Supprime l'espace sous l'image */
+    transition: transform 0.3s ease; /* Animation au survol */
+}
+
+.custom-product-card:hover .product-card-image {
+    transform: scale(1.05); /* Léger zoom au survol de la carte */
+}
+
+.product-card-content {
+    padding: 20px;
+    flex-grow: 1; /* Prend l'espace disponible */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pour pousser les boutons vers le bas si besoin */
+}
+
+.product-card-title {
+    font-size: 1.4em;
+    color: #135474; /* Bleu foncé */
+    margin-bottom: 10px;
+    font-weight: 700;
+    min-height: 2.8em; /* Hauteur minimale pour éviter le décalage si les titres ont des longueurs différentes */
+    display: -webkit-box; /* Pour tronquer le texte sur plusieurs lignes */
+    -webkit-line-clamp: 2; /* Limite à 2 lignes */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card-price {
+    font-size: 1.6em;
+    color: #39AEB3; /* Turquoise */
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.product-card-rating {
+    color: #FFD700; /* Jaune or pour les étoiles */
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+.product-card-rating i {
+    margin: 0 1px; /* Espacement réduit entre les étoiles */
+}
+
+/* Conteneurs pour les grilles de produits */
+/* Utilisation de CSS Grid pour un agencement flexible et responsif */
+
+/* Pour les produits de la page d'accueil (index.php) */
+.product-grid { /* C'est le conteneur des 6 produits sur l'index */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 3 colonnes flexibles par défaut */
+    gap: 30px; /* Espacement entre les cartes */
+    /* Le flex: 2; est toujours sur .product-grid dans .products-grid-container */
+}
+
+/* Pour les produits de la page de liste (listAllProduct.php) */
+.product-cards-container { /* C'est le conteneur de tous les produits sur listAllProduct.php */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 4 colonnes flexibles par défaut */
+    gap: 30px; /* Espacement entre les cartes */
+    padding: 20px 0; /* Padding interne */
+}
+
+
+/* --- Media Queries pour la Responsivité --- */
+/* Ajustements pour les écrans plus petits */
+@media (max-width: 1200px) {
+    .product-cards-container { /* Pour listAllProduct.php */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Passe à 3 ou 4 colonnes */
+        gap: 25px;
+    }
+}
+
+@media (max-width: 992px) {
+    .product-grid { /* Pour index.php */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Passe à 2 ou 3 colonnes */
+        gap: 25px;
+    }
+    .product-cards-container { /* Pour listAllProduct.php */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Passe à 2 ou 3 colonnes */
+        gap: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-card-image-wrapper {
+        height: 180px; /* Réduit la hauteur des images sur les petits écrans */
+    }
+    .product-card-title {
+        font-size: 1.2em;
+    }
+    .product-card-price {
+        font-size: 1.4em;
+    }
+    .product-grid, .product-cards-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Passe à 2 colonnes ou 1 si très petit */
+        gap: 20px;
+    }
+    .btn.custom-action-button, .btn.custom-details-button {
+        padding: 8px 12px;
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card-image-wrapper {
+        height: 150px;
+    }
+    .product-card-title {
+        font-size: 1.1em;
+    }
+    .product-card-price {
+        font-size: 1.3em;
+    }
+    .product-grid, .product-cards-container {
+        grid-template-columns: 1fr; /* Une seule colonne sur les plus petits mobiles */
+        gap: 15px;
+    }
+    .custom-product-card {
+        margin: 0 auto; /* Centrer la carte unique */
+        max-width: 300px; /* Limiter la largeur sur mobile */
+    }
+}
+
+/* --- Palette de couleurs ---
+#000000 - Noir
+#135474 - Bleu foncé
+#39AEB3 - Turquoise
+#D0E2E5 - Gris très clair / Bleu très pâle
+#FFFFFF - Blanc
+#86B9BE - Bleu-vert pâle
+*/
+
+/* --- Styles pour la page d'administration --- */
+.admin-page-container {
+    padding: 40px 0;
+    background-color: #f4f4f4; /* Fond légèrement différent pour distinguer de la page publique */
+    min-height: 80vh; /* S'assure que le contenu remplit au moins 80% de la hauteur de la fenêtre */
+}
+
+/* Titre de page admin */
+.admin-page-container .page-title {
+    color: #135474;
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.8em;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.admin-page-container .page-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 120px; /* Plus large */
+    height: 5px; /* Plus épais */
+    background-color: #39AEB3;
+    border-radius: 5px;
+}
+
+/* Conteneur pour les boutons d'action en haut de la page admin */
+.admin-top-actions {
+    display: flex;
+    justify-content: space-between; /* Espace les éléments aux extrémités */
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Permet aux boutons de passer à la ligne sur petits écrans */
+    gap: 15px; /* Espacement entre les boutons */
+}
+
+.admin-top-actions .btn {
+    padding: 12px 25px;
+    font-size: 1em;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-back-button { /* Bouton "Retour au catalogue public" */
+    background-color: #86B9BE; /* Bleu-vert pâle */
+    color: #FFFFFF;
+}
+
+.admin-back-button:hover {
+    background-color: #135474; /* Bleu foncé */
+    transform: translateY(-2px);
+}
+
+.add-product-button { /* Bouton "Ajouter un produit" */
+    background-color: #39AEB3; /* Turquoise */
+    color: #FFFFFF;
+}
+
+.add-product-button:hover {
+    background-color: #135474; /* Bleu foncé */
+    transform: translateY(-2px);
+}
+
+.admin-top-actions .btn i {
+    margin-right: 8px;
+}
+
+
+/* Section de tri et filtrage pour l'admin */
+.admin-sort-filter {
+    background-color: #FFFFFF;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    display: flex; /* Utilise flexbox pour l'alignement */
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Réutilisation des styles .form-select et .apply-sort-button de listAllProduct.php */
+/* Assurez-vous que ces styles sont déjà définis ou copiez-les ici si ce n'est pas le cas */
+
+/* --- Styles du tableau d'administration --- */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* Permet le défilement horizontal sur les petits écrans */
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.admin-product-table {
+    width: 100%;
+    border-collapse: collapse; /* Supprime l'espace entre les bordures de cellules */
+    background-color: #FFFFFF;
+    font-size: 0.95em; /* Taille de police légèrement plus petite */
+}
+
+.admin-product-table thead tr {
+    background-color: #135474; /* Bleu foncé pour l'en-tête */
+    color: #FFFFFF;
+    text-align: left;
+}
+
+.admin-product-table th,
+.admin-product-table td {
+    padding: 12px 15px; /* Espacement interne des cellules */
+    border: 1px solid #D0E2E5; /* Bordure fine grise */
+    vertical-align: middle; /* Aligne le contenu au milieu verticalement */
+}
+
+.admin-product-table th {
+    font-weight: 600; /* Texte de l'en-tête en gras */
+    white-space: nowrap; /* Empêche le texte des en-têtes de se couper */
+}
+
+.admin-product-table tbody tr:nth-child(even) {
+    background-color: #F9F9F9; /* Rayures pour une meilleure lisibilité */
+}
+
+.admin-product-table tbody tr:hover {
+    background-color: #E6F3F5; /* Changement de couleur au survol de la ligne */
+}
+
+.admin-product-table .table-actions-col {
+    width: 200px; /* Largeur fixe pour la colonne des actions */
+    text-align: center;
+}
+
+.admin-product-table .table-actions {
+    display: flex;
+    gap: 8px; /* Espacement entre les boutons d'action */
+    justify-content: center; /* Centre les boutons si la colonne est large */
+    flex-wrap: wrap; /* Permet aux boutons de passer à la ligne sur petits écrans */
+}
+
+.admin-product-table .action-button {
+    padding: 8px 12px;
+    font-size: 0.85em;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #FFFFFF;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex; /* Pour aligner l'icône et le texte */
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; /* Empêche le texte du bouton de se couper */
+    flex-grow: 1; /* Permet aux boutons de grandir pour remplir l'espace */
+}
+
+.admin-product-table .action-button i {
+    margin-right: 5px;
+}
+
+.admin-product-table .edit-button {
+    background-color: #86B9BE; /* Bleu-vert pâle */
+}
+
+.admin-product-table .edit-button:hover {
+    background-color: #135474; /* Bleu foncé */
+    transform: translateY(-1px);
+}
+
+.admin-product-table .delete-button {
+    background-color: #FF6B6B; /* Rouge pour supprimer */
+}
+
+.admin-product-table .delete-button:hover {
+    background-color: #E04848; /* Rouge plus foncé */
+    transform: translateY(-1px);
+}
+
+.no-products-message {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #777;
+    background-color: #F2F2F2;
+}
+
+.error-message {
+    background-color: #ffe0e0; /* Fond rouge très clair */
+    color: #d8000c; /* Texte rouge foncé */
+    border: 1px solid #d8000c;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 500;
+}
+
+
+/* --- Responsive Adjustments pour la page admin --- */
+@media (max-width: 992px) {
+    .admin-top-actions {
+        flex-direction: column; /* Empile les boutons */
+        align-items: stretch; /* Les étire en largeur */
+    }
+    .admin-top-actions .btn {
+        width: 100%; /* Prend toute la largeur */
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-page-container .page-title {
+        font-size: 2.2em;
+    }
+    .admin-top-actions {
+        gap: 10px;
+    }
+
+    /* Le tableau devient "responsive" pour les petits écrans */
+    .admin-product-table, .admin-product-table tbody, .admin-product-table tr, .admin-product-table td {
+        display: block; /* Chaque cellule devient un bloc */
+        width: 100%;
+    }
+
+    .admin-product-table thead {
+        display: none; /* Cache l'en-tête sur les petits écrans */
+    }
+
+    .admin-product-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #D0E2E5;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        padding: 10px; /* Padding interne pour la carte de ligne */
+    }
+
+    .admin-product-table td {
+        text-align: right;
+        padding-left: 50%; /* Espace pour le label */
+        position: relative;
+        border: none; /* Supprime les bordures de cellule internes */
+    }
+
+    .admin-product-table td::before {
+        content: attr(data-label); /* Utilise l'attribut data-label comme titre */
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px); /* Largeur du label */
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: #135474; /* Bleu foncé pour les labels */
+    }
+
+    .admin-product-table .table-actions-col {
+        width: auto; /* Supprime la largeur fixe */
+        text-align: center;
+    }
+
+    .admin-product-table .table-actions {
+        justify-content: center;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-page-container .page-title {
+        font-size: 1.8em;
+    }
+    .admin-sort-filter {
+        padding: 15px;
+    }
+    .admin-product-table td::before {
+        width: calc(40% - 15px); /* Ajuste la largeur du label sur très petits écrans */
+        font-size: 0.9em;
+    }
+    .admin-product-table .action-button {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+}
+
+
+/* --- Palette de couleurs ---
+#000000 - Noir
+#135474 - Bleu foncé
+#39AEB3 - Turquoise
+#D0E2E5 - Gris très clair / Bleu très pâle
+#FFFFFF - Blanc
+#86B9BE - Bleu-vert pâle
+*/
+
+/* ... (Conservez tous les styles précédents pour admin-page-container, table-responsive, admin-product-table, etc.) ... */
+
+/* Nouvelle couleur pour le bouton "Détails" */
+.admin-product-table .details-button {
+    background-color: #39AEB3; /* Turquoise, pour un bouton d'information/détails */
+}
+
+.admin-product-table .details-button:hover {
+    background-color: #135474; /* Bleu foncé au survol */
+    transform: translateY(-1px);
+}
+
+/* ... (Conservez les styles pour .edit-button, .delete-button si vous les avez toujours,
+    mais assurez-vous qu'ils ne se chevauchent pas avec .details-button si vous ne les utilisez plus) ... */
+
+
+/* Ajustement du colspan pour le message "Aucun produit" sur les petits écrans */
+/* C'est important car l'en-tête est caché sur mobile, et les td::before créent un affichage différent */
+@media (max-width: 768px) {
+    .admin-product-table .no-products-message {
+        /* Pas de colspan nécessaire ici car il est display:block */
+        /* Si vous le souhaitez, vous pouvez définir une largeur max pour le centrer */
+        max-width: 90%;
+        margin: 20px auto;
+    }
+}
+
+
+/* --- Palette de couleurs ---
+#000000 - Noir
+#135474 - Bleu foncé
+#39AEB3 - Turquoise
+#D0E2E5 - Gris très clair / Bleu très pâle
+#FFFFFF - Blanc
+#86B9BE - Bleu-vert pâle
+*/
+
+/* --- Styles pour la page de connexion (loginPage.php) --- */
+
+.login-page-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px); /* Ajuste la hauteur pour tenir compte de la navbar et du footer */
+    background-color: #f0f2f5; /* Un fond doux pour la page de connexion */
+    padding: 40px 20px;
+}
+
+.login-container {
+    background-color: #FFFFFF;
+    padding: 40px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px; /* Largeur maximale pour le formulaire */
+    box-sizing: border-box; /* Inclut padding et bordure dans la largeur */
+    text-align: center;
+    position: relative; /* Pour positionner l'ombre ou d'autres éléments */
+}
+
+/* Ombre subtile pour le conteneur de formulaire */
+.card-shadow {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Ombre douce et profonde */
+}
+
+.form-title {
+    color: #135474; /* Bleu foncé */
+    font-size: 2.2em;
+    margin-bottom: 30px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.form-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #39AEB3; /* Turquoise */
+    border-radius: 5px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacement entre les groupes d'entrée */
+}
+
+.form-group {
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #135474; /* Bleu foncé */
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+.form-group label i {
+    margin-right: 8px;
+    color: #39AEB3; /* Turquoise pour les icônes */
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #D0E2E5; /* Gris très clair */
+    border-radius: 8px;
+    font-size: 1em;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; /* Inclut padding et bordure dans la largeur */
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus {
+    border-color: #39AEB3; /* Turquoise au focus */
+    box-shadow: 0 0 0 0.2rem rgba(57, 174, 179, 0.25); /* Ombre légère de la couleur accent */
+    outline: none;
+}
+
+.submit-button {
+    margin-top: 20px;
+    padding: 14px 25px;
+    font-size: 1.1em;
+    font-weight: 700;
+    width: 100%; /* Prend toute la largeur */
+    letter-spacing: 0.5px;
+}
+
+.form-footer {
+    margin-top: 25px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.text-link {
+    color: #135474; /* Bleu foncé pour les liens */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
+}
+
+.text-link:hover {
+    color: #39AEB3; /* Turquoise au survol */
+    text-decoration: underline;
+}
+
+.register-link {
+    font-weight: 600; /* Plus de gras pour le lien d'inscription */
+}
+
+/* Messages d'erreur et de succès */
+.error-message, .success-message {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    text-align: center;
+    font-weight: 500;
+}
+
+.error-message {
+    background-color: #ffe0e0; /* Rouge très clair */
+    color: #d8000c; /* Rouge foncé */
+    border: 1px solid #d8000c;
+}
+
+.success-message {
+    background-color: #e0ffe0; /* Vert très clair */
+    color: #008000; /* Vert foncé */
+    border: 1px solid #008000;
+}
+
+
+/* --- Responsive Design pour la page de connexion --- */
+@media (max-width: 768px) {
+    .login-page-main {
+        padding: 30px 15px;
+    }
+    .login-container {
+        padding: 30px;
+        border-radius: 8px;
+    }
+    .form-title {
+        font-size: 1.8em;
+        margin-bottom: 25px;
+    }
+    .form-group input {
+        padding: 10px 12px;
+        font-size: 0.95em;
+    }
+    .submit-button {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+    .form-footer {
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 25px;
+    }
+    .form-title {
+        font-size: 1.6em;
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        font-size: 0.9em;
+    }
+    .form-group input {
+        font-size: 0.9em;
+    }
+    .submit-button {
+        font-size: 0.95em;
+    }
+}
+
+/* --- Palette de couleurs ---
+#000000 - Noir
+#135474 - Bleu foncé
+#39AEB3 - Turquoise
+#D0E2E5 - Gris très clair / Bleu très pâle
+#FFFFFF - Blanc
+#86B9BE - Bleu-vert pâle
+*/
+
+/* --- Styles pour la page de détails du produit (infoProduit.php et infoProduitAdmin.php) --- */
+
+.product-detail-page-main {
+    padding: 40px 20px;
+    background-color: #f8fbfd; /* Fond très léger */
+    min-height: calc(100vh - 100px); /* Assure que le contenu ne soit pas trop court */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Aligne en haut */
+}
+
+.product-detail-container {
+    display: flex;
+    flex-direction: row; /* Disposition côte à côte */
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); /* Ombre plus prononcée et élégante */
+    overflow: hidden; /* Assure que rien ne déborde des coins arrondis */
+}
+
+/* Style spécifique pour le conteneur admin, pour une distinction visuelle si nécessaire */
+.admin-product-detail-container {
+    border: 2px solid #135474; /* Bordure plus marquée pour la version admin */
+    box-shadow: 0 15px 40px rgba(19, 84, 116, 0.2); /* Ombre avec la couleur principale */
+}
+
+.product-image-wrapper {
+    flex: 1; /* Prend la moitié de l'espace horizontal */
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #D0E2E5; /* Fond léger pour la section image */
+    border-right: 1px solid #eee; /* Séparateur visuel */
+}
+
+.product-detail-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 500px; /* Limite la hauteur de l'image */
+    object-fit: contain; /* Assure que l'image est entièrement visible */
+    border-radius: 8px; /* Bords légèrement arrondis pour l'image */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.product-info-section {
+    flex: 1.2; /* Prend un peu plus de place que l'image */
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.product-detail-title {
+    font-size: 2.8em;
+    color: #135474; /* Bleu foncé */
+    margin-bottom: 15px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.product-detail-meta {
+    display: flex;
+    flex-wrap: wrap; /* Pour gérer les petits écrans */
+    gap: 25px; /* Espacement entre catégorie et marque */
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: #666;
+    font-weight: 500;
+}
+
+.product-detail-meta i {
+    margin-right: 8px;
+    color: #39AEB3; /* Turquoise */
+}
+
+.product-detail-rating {
+    margin-bottom: 25px;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.product-detail-rating .fas.fa-star.filled {
+    color: #FFD700; /* Jaune or */
+}
+
+.product-detail-rating .far.fa-star {
+    color: #ccc; /* Gris clair pour les étoiles non remplies */
+}
+
+.product-detail-rating .rating-text {
+    color: #444;
+    font-weight: 600;
+}
+
+.product-detail-description {
+    font-size: 1.05em;
+    line-height: 1.7;
+    color: #555;
+    margin-bottom: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
+
+.product-detail-price {
+    font-size: 3em;
+    color: #E74C3C; /* Un rouge vif pour le prix, ou #39AEB3 pour rester dans votre palette */
+    font-weight: bold;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.product-detail-stock-status {
+    margin-bottom: 15px; /* Réduit l'espace car la date d'ajout suit */
+    font-size: 1.05em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stock-label {
+    color: #135474;
+}
+
+.in-stock {
+    color: #28a745; /* Vert pour "En stock" */
+}
+
+.out-of-stock {
+    color: #dc3545; /* Rouge pour "Rupture de stock" */
+}
+
+.product-detail-stock-status i {
+    margin-right: 5px;
+}
+
+/* Style pour la date d'ajout */
+.product-detail-date-added {
+    font-size: 0.95em;
+    color: #777;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-detail-date-added .date-label {
+    font-weight: 600;
+    color: #135474;
+}
+
+.product-detail-date-added i {
+    color: #39AEB3; /* Turquoise pour l'icône calendrier */
+}
+
+.product-detail-action-buttons { /* Pour la version publique */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.product-detail-admin-actions { /* Pour la version admin */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+
+/* Boutons d'action */
+.add-to-cart-button,
+.add-to-wishlist-button,
+.admin-edit-button { /* Nouvelle classe pour le bouton d'édition admin */
+    padding: 15px 25px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    flex-grow: 1; /* Permet aux boutons de grandir pour remplir l'espace */
+    font-weight: 600;
+    text-decoration: none; /* Pour les <a> qui ressemblent à des boutons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; /* Empêche le texte du bouton de se couper */
+}
+
+.add-to-cart-button {
+    background-color: #39AEB3; /* Turquoise */
+    color: #FFFFFF;
+    box-shadow: 0 5px 15px rgba(57, 174, 179, 0.2);
+}
+
+.add-to-cart-button:hover {
+    background-color: #135474; /* Bleu foncé */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(19, 84, 116, 0.3);
+}
+
+.add-to-wishlist-button {
+    background-color: #86B9BE; /* Bleu-vert pâle */
+    color: #FFFFFF;
+    border: 1px solid #86B9BE;
+    box-shadow: 0 5px 15px rgba(134, 185, 190, 0.2);
+}
+
+.add-to-wishlist-button:hover {
+    background-color: #135474; /* Bleu foncé */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(19, 84, 116, 0.3);
+}
+
+/* Style spécifique pour le bouton d'édition Admin */
+.admin-edit-button {
+    background-color: #135474; /* Bleu foncé de votre palette */
+    color: #FFFFFF;
+    box-shadow: 0 5px 15px rgba(19, 84, 116, 0.2);
+}
+
+.admin-edit-button:hover {
+    background-color: #0d384e; /* Encore plus foncé */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(19, 84, 116, 0.3);
+}
+
+.product-detail-action-buttons .btn i,
+.product-detail-admin-actions .btn i {
+    margin-right: 10px;
+}
+
+
+/* --- Responsive Design pour infoProduit.php et infoProduitAdmin.php --- */
+@media (max-width: 992px) {
+    .product-detail-container {
+        flex-direction: column; /* Empile les sections */
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .product-image-wrapper {
+        border-right: none;
+        border-bottom: 1px solid #eee; /* Ajoute un séparateur en bas */
+        padding: 25px;
+    }
+    .product-info-section {
+        padding: 30px;
+        text-align: center; /* Centre le texte sur petits écrans */
+        align-items: center; /* Centre les éléments dans la colonne */
+    }
+    .product-detail-title {
+        font-size: 2.2em;
+        margin-bottom: 10px;
+    }
+    .product-detail-meta {
+        justify-content: center; /* Centre les tags */
+        margin-bottom: 15px;
+        gap: 15px;
+    }
+    .product-detail-price {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+    }
+    .product-detail-description {
+        padding-top: 20px;
+        margin-bottom: 20px;
+    }
+    .product-detail-action-buttons,
+    .product-detail-admin-actions {
+        flex-direction: column; /* Empile les boutons d'action */
+        width: 100%;
+        max-width: 350px; /* Limite la largeur des boutons empilés */
+        margin: 20px auto 0 auto;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-detail-page-main {
+        padding: 20px 10px;
+    }
+    .product-detail-container {
+        border-radius: 8px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    .product-image-wrapper {
+        padding: 15px;
+    }
+    .product-info-section {
+        padding: 20px;
+    }
+    .product-detail-title {
+        font-size: 1.8em;
+    }
+    .product-detail-price {
+        font-size: 2em;
+    }
+    .product-detail-description {
+        font-size: 0.95em;
+        line-height: 1.6;
+    }
+    .add-to-cart-button,
+    .add-to-wishlist-button,
+    .admin-edit-button {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+}
+
+/* --- Styles pour la page d'ajout de produit (ajoutProduitPage.php) --- */
+
+.add-product-page-main {
+    padding: 40px 20px;
+    background-color: #f8fbfd;
+    min-height: calc(100vh - 100px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.add-product-container {
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px 40px;
+}
+
+.add-product-container h2 {
+    font-size: 2.2em;
+    color: #135474;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.add-product-form .form-group {
+    margin-bottom: 20px;
+}
+
+.add-product-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 1.05em;
+}
+
+.add-product-form label .required {
+    color: #dc3545; /* Rouge pour les champs obligatoires */
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+
+.add-product-form input[type="text"],
+.add-product-form input[type="number"],
+.add-product-form textarea,
+.add-product-form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #555;
+    background-color: #fcfcfc;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; /* Inclure le padding dans la largeur */
+}
+
+.add-product-form input[type="text"]:focus,
+.add-product-form input[type="number"]:focus,
+.add-product-form textarea:focus,
+.add-product-form select:focus {
+    border-color: #39AEB3;
+    box-shadow: 0 0 0 3px rgba(57, 174, 179, 0.2);
+    outline: none;
+}
+
+.add-product-form textarea {
+    resize: vertical; /* Permet de redimensionner verticalement */
+    min-height: 80px;
+}
+
+.add-product-form input[type="file"] {
+    padding: 10px 0;
+    font-size: 1em;
+    color: #555;
+}
+
+.add-product-form small {
+    display: block;
+    margin-top: 5px;
+    color: #777;
+    font-size: 0.85em;
+}
+
+.add-product-form .submit-button {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    background-color: #39AEB3; /* Turquoise */
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(57, 174, 179, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.add-product-form .submit-button:hover {
+    background-color: #135474; /* Bleu foncé */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(19, 84, 116, 0.3);
+}
+
+.form-message {
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    font-size: 1.05em;
+    font-weight: 500;
+    text-align: center;
+}
+
+.form-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.form-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive Design pour le formulaire d'ajout */
+@media (max-width: 768px) {
+    .add-product-container {
+        padding: 25px 25px;
+        border-radius: 10px;
+    }
+
+    .add-product-container h2 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+
+    .add-product-form label {
+        font-size: 1em;
+    }
+
+    .add-product-form input[type="text"],
+    .add-product-form input[type="number"],
+    .add-product-form textarea,
+    .add-product-form select {
+        padding: 10px;
+        font-size: 0.95em;
+    }
+
+    .add-product-form .submit-button {
+        padding: 12px;
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-product-container {
+        padding: 20px 15px;
+    }
+
+    .add-product-container h2 {
+        font-size: 1.6em;
+    }
+
+    .add-product-form .submit-button {
+        font-size: 1em;
+    }
+}
+
+
+
+/* ------------------------------------ */
+
+
+/* --- Nouveaux Styles pour les modifications de l'index.php --- */
+
+/* Styles pour la section Hero avec image pleine largeur (Partie 1) */
+.full-width-image-section {
+    position: relative;
+    width: 100%;
+    height: 600px; /* Hauteur fixe pour la section hero, ajustez si nécessaire */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centre le contenu verticalement */
+    text-align: center;
+    color: #FFFFFF;
+    overflow: hidden;
+    padding: 0;
+    /*margin-top: -70px; /* Compense la hauteur de la navbar pour que l'image touche le haut de la page */
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Voile sombre semi-transparent (40% opacité) */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.full-width-image-section h1 {
+    font-size: 4em;
+    margin-bottom: 20px;
+    font-weight: 900;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    color: #FFFFFF;
+}
+
+.full-width-image-section p {
+    font-size: 1.5em;
+    max-width: 800px;
+    line-height: 1.6;
+    margin-bottom: 0; /* Suppression de la marge en bas car plus de bouton */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    color: #FFFFFF;
+}
+
+/* Styles pour la section des produits (Partie 2) */
+.best-products-section {
+    padding: 60px 20px;
+    background-color: #f0f2f5; /* Un fond légèrement grisé pour la section produits */
+}
+
+.best-products-layout { /* Nouveau conteneur pour la partie 2 */
+    display: flex;
+    flex-direction: column; /* Les éléments s'empilent verticalement */
+    gap: 40px; /* Espace entre la grille et la sidebar empilée */
+    max-width: 1200px; /* Limite la largeur du contenu */
+    margin: 0 auto;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 3 colonnes flexibles */
+    gap: 30px; /* Espacement entre les cartes */
+    background-color: #FFFFFF; /* Fond blanc pour la grille elle-même */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.best-products-sidebar {
+    width: 100%; /* Prend toute la largeur quand empilé */
+    padding: 40px; /* Un peu plus de padding pour le texte */
+    background-color: #135474; /* Bleu foncé */
+    color: #FFFFFF;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.sidebar-title {
+    font-size: 2.2em; /* Plus grand pour le titre de la section */
+    margin-bottom: 25px;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.3;
+}
+
+.sidebar-description {
+    font-size: 1.2em; /* Plus grand */
+    line-height: 1.7;
+    margin-bottom: 35px; /* Plus de marge sous le texte */
+    color: #D0E2E5;
+    max-width: 700px; /* Limite la largeur du texte pour la lisibilité */
+}
+
+.best-products-sidebar .view-all-button {
+    background-color: #39AEB3;
+    color: #FFFFFF;
+    border: 2px solid #39AEB3;
+    padding: 15px 35px; /* Plus grand */
+    font-size: 1.3em; /* Plus grand */
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(57, 174, 179, 0.3);
+}
+
+.best-products-sidebar .view-all-button:hover {
+    background-color: #FFFFFF;
+    color: #135474;
+    border-color: #FFFFFF;
+    transform: translateY(-5px); /* Plus d'effet */
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+}
+
+/* Styles pour la section "À Propos" (Partie 3) */
+.about-us-section {
+    background-color: #FFFFFF;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.about-us-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.about-us-section .section-title {
+    font-size: 2.5em;
+    color: #135474;
+    margin-bottom: 30px;
+    font-weight: 800;
+}
+
+.about-us-section p {
+    font-size: 1.15em;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.about-us-section p strong {
+    color: #135474;
+}
+
+
+/* Responsive Design Ajustements pour la nouvelle structure */
+@media (max-width: 992px) {
+    .full-width-image-section {
+        height: 500px;
+    }
+    .full-width-image-section h1 {
+        font-size: 3em;
+    }
+    .full-width-image-section p {
+        font-size: 1.2em;
+    }
+
+    .best-products-layout {
+        gap: 30px; /* Ajuste l'espace si empilé */
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Ajuste la grille */
+        padding: 25px;
+    }
+    .best-products-sidebar {
+        padding: 30px; /* Ajuste le padding */
+    }
+    .sidebar-title {
+        font-size: 2em;
+    }
+    .sidebar-description {
+        font-size: 1.1em;
+    }
+    .best-products-sidebar .view-all-button {
+        padding: 12px 25px;
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 768px) {
+    .full-width-image-section {
+        height: 400px;
+    }
+    .full-width-image-section h1 {
+        font-size: 2.5em;
+    }
+    .full-width-image-section p {
+        font-size: 1em;
+    }
+
+    .best-products-section {
+        padding: 40px 15px;
+    }
+    .product-grid {
+        padding: 20px;
+        gap: 20px;
+    }
+    .sidebar-title {
+        font-size: 1.8em;
+    }
+    .sidebar-description {
+        font-size: 1em;
+    }
+    .about-us-section {
+        padding: 60px 15px;
+    }
+    .about-us-section .section-title {
+        font-size: 2em;
+    }
+    .about-us-section p {
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .full-width-image-section {
+        height: 350px;
+    }
+    .full-width-image-section h1 {
+        font-size: 2em;
+    }
+    .full-width-image-section p {
+        font-size: 0.9em;
+    }
+    .product-grid {
+        grid-template-columns: 1fr; /* Une seule colonne sur les très petits écrans */
+    }
+    .sidebar-title {
+        font-size: 1.5em;
+    }
+    .sidebar-description {
+        font-size: 0.9em;
+    }
+    .best-products-sidebar .view-all-button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+}
+
+/* Styles existants pour les cartes produit (inchangés ici) */
+.custom-product-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+.custom-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.product-card-image-wrapper {
+    width: 100%;
+    padding-top: 100%; /* Ratio 1:1 pour un carré */
+    position: relative;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+}
+
+.product-card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 15px;
+}
+
+.product-card-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-card-title {
+    font-size: 1.3em;
+    color: #135474;
+    margin-bottom: 10px;
+    font-weight: 700;
+    line-height: 1.3;
+    min-height: 2.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-card-price {
+    font-size: 1.5em;
+    color: #E74C3C;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.product-card-rating {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    color: #FFD700;
+}
+
+.product-card-rating .far.fa-star {
+    color: #ccc;
+}
+
+.product-card-rating .fas.fa-star.filled {
+    color: #FFD700;
+}
+
+.product-details-button {
+    background-color: #39AEB3;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-top: 15px;
+    width: 100%;
+    max-width: 200px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.product-details-button:hover {
+    background-color: #135474;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(19, 84, 116, 0.3);
+}
