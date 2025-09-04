@@ -145,14 +145,18 @@ include 'navBar.php'; // Inclusion de la barre de navigation
                         <td><?= htmlspecialchars($formattedDate) ?></td>
                         <td><?= htmlspecialchars($infoProduit['evaluation_moyenne'] ?? 'N/A') ?> / 5</td>
                         <td><?= htmlspecialchars($infoProduit['statut'] ?? 'N/A') ?></td>
+
                         <td class="table-actions">
-                            <a href='modificationProduitPage.php?id=<?= htmlspecialchars($infoProduit['id'] ?? '') ?>' class="btn action-button edit-button" title="Modifier ce produit">
+                            <a href="modificationProduitPage.php?nom=<?= urlencode($infoProduit['nom'] ?? '') ?>"
+                               class="btn action-button edit-button" title="Modifier ce produit">
                                 <i class="fas fa-edit"></i> Modifier
                             </a>
-                            <a href='infoProduit.php?id=<?= htmlspecialchars($infoProduit['id'] ?? '') ?>' class="btn action-button details-button" title="Voir les détails du produit">
+                            <a href="infoProduit.php?nom=<?= urlencode($infoProduit['nom'] ?? '') ?>"
+                               class="btn action-button details-button" title="Voir les détails du produit (admin)">
                                 <i class="fas fa-info-circle"></i> Détails
                             </a>
                         </td>
+
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>

@@ -88,7 +88,7 @@ if (!empty($photo_produit_db)) {
     }
 
     foreach ($possibleFilenames as $testFilename) {
-        $serverFilePath = __DIR__ . '/' . $baseImagePath . $testFilename; // Chemin absolu sur le serveur
+        $serverFilePath = __DIR__ . 'infoProduit_WIP.php/' . $baseImagePath . $testFilename; // Chemin absolu sur le serveur
         $browserUrl = $baseImagePath . urlencode($testFilename); // URL pour le navigateur
         if (file_exists($serverFilePath)) {
             $finalImageUrl = $browserUrl; // Si trouvé, c'est cette URL qu'on va utiliser
@@ -98,7 +98,7 @@ if (!empty($photo_produit_db)) {
 }
 $imageProduct = htmlspecialchars($finalImageUrl);
 
-include 'navbar.php';
+include 'navBar.php';
 // --- FIN ZONE PHP ---
 ?>
 
@@ -108,7 +108,7 @@ include 'navbar.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails du produit - <?= $nom ?></title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* Styles spécifiques pour cette page, si non déjà dans styles.css */

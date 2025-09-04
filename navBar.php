@@ -34,8 +34,6 @@ if (session_status() == PHP_SESSION_NONE) {
                     // Il doit pointer vers votre script logout.php avec l'action 'logout'.
                     echo '<a href="logout.php?action=logout" class="auth-button logout-button">Déconnexion</a>';
                 } else {
-                    // Si l'utilisateur n'est PAS connecté, afficher les boutons S'inscrire et Se connecter.
-                    echo '<button class="auth-button register-button">S\'inscrire</button>';
                     echo '<a href="loginPage.php" class="button login-button">Se connecter</a>';
                 }
 
@@ -46,12 +44,32 @@ if (session_status() == PHP_SESSION_NONE) {
     </div>
 </header>
 
+
+<!-- La side barre sur le coté gauche -->
 <nav id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" id="closeSidenav">&times;</a> <a href="index.php">Accueil</a>
     <a href="listAllProduct.php">Tous nos produits</a>
+    <?php
+    if (isset($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true) {
+        // Si l'utilisateur est connecté, afficher le bouton de déconnexion.
+        // Il doit pointer vers votre script logout.php avec l'action 'logout'.
+        echo '<a href="listAllProductAdmin.php?action=logout" class="auth-button logout-button">Produits version Admin</a>';
+    }
+    ?>
+
     <a href="contactUS.php">Contactez-nous</a>
-    <a href="#">Nos réseaux</a>
+
+    <?php
+    if (isset($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true) {
+        // Si l'utilisateur est connecté, afficher le bouton de déconnexion.
+        // Il doit pointer vers votre script logout.php avec l'action 'logout'.
+        echo '<a href="logout.php?action=logout" class="auth-button logout-button">Déconnexion</a>';
+    } else {
+        echo '<a href="loginPage.php" class="button login-button">Se connecter</a>';
+    }
+    ?>
 </nav>
+
 
 <div id="sidenavOverlay" class="sidenav-overlay"></div>
 

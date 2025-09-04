@@ -120,7 +120,7 @@ td {
     z-index: 1000; /* Plus haut que tout le reste */
     top: 0;
     left: 0;
-    background-color: #111; /* Couleur de fond sombre */
+    background-color: #86b9be; /* Couleur de fond sombre */
     overflow-x: hidden; /* Désactive le défilement horizontal */
     transition: 0.3s; /* Transition pour une ouverture/fermeture en douceur */
     padding-top: 60px; /* Espace en haut pour le bouton de fermeture */
@@ -131,7 +131,7 @@ td {
     padding: 8px 8px 8px 32px; /* Espacement intérieur */
     text-decoration: none;
     font-size: 20px;
-    color: #818181; /* Couleur du texte des liens */
+    color: #000000; /* Couleur du texte des liens */
     display: block; /* Chaque lien sur une nouvelle ligne */
     transition: 0.2s; /* Transition pour le survol */
 }
@@ -975,7 +975,7 @@ td {
 
 .best-products-sidebar .sidebar-description {
     font-size: 1.1em;
-    color: #000000; /* Noir pour le texte, ou un gris très foncé */
+    color: #dfdfdf; /* Noir pour le texte, ou un gris très foncé */
     margin-bottom: 30px;
     line-height: 1.6;
 }

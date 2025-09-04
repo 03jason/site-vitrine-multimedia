@@ -76,7 +76,7 @@ if (!empty($photo_produit_db)) {
     }
 
     foreach ($possibleFilenames as $testFilename) {
-        $serverFilePath = __DIR__ . '/' . $baseImagePath . $testFilename;
+        $serverFilePath = __DIR__ . 'modificationProduitPage.php/' . $baseImagePath . $testFilename;
         $browserUrl = $baseImagePath . urlencode($testFilename);
         if (file_exists($serverFilePath)) {
             $finalImageUrl = $browserUrl;
