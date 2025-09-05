@@ -116,12 +116,15 @@ include 'navBar.php';
 
     <section class="about-us-section">
         <div class="container about-us-content">
-            <h2 class="section-title">À Propos de Notre Entreprise</h2>
-            <p>Bienvenue chez **TechPulse**, votre destination de confiance pour l'électronique grand public de pointe. Depuis notre fondation, nous nous engageons à offrir à nos clients une sélection inégalée de produits multimédia, allant des derniers smartphones et ordinateurs portables aux équipements audio et vidéo de haute performance.</p>
-            <p>Notre mission est de simplifier l'accès à la technologie tout en garantissant une qualité irréprochable et un service client exceptionnel. Nous collaborons avec les marques les plus réputées pour vous apporter des innovations qui enrichissent votre quotidien, que ce soit pour le travail, le divertissement ou la communication.</p>
-            <p>Chez TechPulse, nous croyons en une approche personnalisée. Notre équipe d'experts est toujours prête à vous conseiller et à vous guider pour faire le meilleur choix. Votre satisfaction est notre priorité absolue, et nous nous efforçons de construire une relation de confiance durable avec chacun de nos clients. Merci de choisir TechPulse pour vos besoins technologiques !</p>
+            <h2 class="section-title">À Propos de Nous</h2>
+            <p><strong>IT_SHP</strong> met en avant une sélection d’équipements et d’accessoires multimédia choisis pour leur fiabilité et leur qualité.
+                Notre site vitrine a pour objectif de présenter nos produits de manière claire et professionnelle</p>
+
+            <p>Notre équipe reste à votre disposition pour répondre à vos questions et vous accompagner dans vos projets technologiques.
+                Découvrez notre univers et n’hésitez pas à nous contacter pour en savoir plus.</p>
         </div>
     </section>
+
 
 </main>
 
