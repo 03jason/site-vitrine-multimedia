@@ -18,7 +18,6 @@ if ($id <= 0 || $desc === '') {
 $isGerant = !empty($_SESSION['ADMIN']) && $_SESSION['ADMIN'] === true;
 
 if ($isGerant) {
-    // Champs supplémentaires autorisés pour le gérant
     $nom   = trim($_POST['nom'] ?? '');
     $prix  = (float)($_POST['prix'] ?? 0);
     $qte   = (int)($_POST['quantite_en_stock'] ?? 0);
@@ -31,7 +30,6 @@ if ($isGerant) {
         exit('Champs invalides');
     }
 
-    // Photo : chemin direct prioritaire
     $imagePath = trim($_POST['image_path'] ?? '');
     $photo = null;
 

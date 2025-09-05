@@ -50,8 +50,6 @@ if (session_status() == PHP_SESSION_NONE) {
     <a href="listAllProduct.php">Tous nos produits</a>
     <?php
     if (isset($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true) {
-        // Si l'utilisateur est connecté, afficher le bouton de déconnexion.
-        // Il doit pointer vers votre script logout.php avec l'action 'logout'.
         echo '<a href="listAllProductAdmin.php?action=logout" class="auth-button logout-button">Produits version Admin</a>';
     }
     ?>
@@ -60,8 +58,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
     <?php
     if (isset($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true) {
-        // Si l'utilisateur est connecté, afficher le bouton de déconnexion.
-        // Il doit pointer vers votre script logout.php avec l'action 'logout'.
         echo '<a href="logout.php?action=logout" class="auth-button logout-button">Déconnexion</a>';
     } else {
         echo '<a href="loginPage.php" class="button login-button">Se connecter</a>';
@@ -74,7 +70,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Logique existante pour le dropdown utilisateur
         const userIconTrigger = document.getElementById('userIconTrigger');
         const authDropdown = document.getElementById('authDropdown');
 
@@ -84,39 +79,33 @@ if (session_status() == PHP_SESSION_NONE) {
         });
 
         document.addEventListener('click', function(event) {
-            // S'assurer que le clic n'est pas sur le trigger ni dans le dropdown lui-même
             if (!authDropdown.contains(event.target) && !userIconTrigger.contains(event.target) && event.target.closest('#userIconTrigger') === null) {
                 authDropdown.classList.remove('show');
             }
         });
 
-        // --- NOUVELLE LOGIQUE POUR LE SIDENAV ---
         const menuToggle = document.getElementById('menuToggle');
         const closeSidenav = document.getElementById('closeSidenav');
         const mySidenav = document.getElementById('mySidenav');
         const sidenavOverlay = document.getElementById('sidenavOverlay');
 
-        // Ouvrir le sidenav
         menuToggle.addEventListener('click', function() {
-            mySidenav.style.width = "250px"; // Largeur du menu
-            sidenavOverlay.style.display = "block"; // Afficher l'overlay
-            sidenavOverlay.style.opacity = "1"; // Rendre l'overlay opaque
-            // Optionnel: Désactiver le scroll du body quand le menu est ouvert
+            mySidenav.style.width = "250px";
+            sidenavOverlay.style.display = "block";
+            sidenavOverlay.style.opacity = "1";
             document.body.style.overflow = "hidden";
         });
 
-        // Fermer le sidenav (via le bouton X ou l'overlay)
         function closeNav() {
-            mySidenav.style.width = "0"; // Réduire la largeur à 0
-            sidenavOverlay.style.opacity = "0"; // Cacher l'overlay en fondu
-            // Attendre la fin de la transition pour masquer complètement l'overlay
+            mySidenav.style.width = "0";
+            sidenavOverlay.style.opacity = "0";
             setTimeout(() => {
                 sidenavOverlay.style.display = "none";
-            }, 300); // Doit correspondre à la durée de transition CSS
-            document.body.style.overflow = "auto"; // Réactiver le scroll
+            }, 300);
+            document.body.style.overflow = "auto";
         }
 
         closeSidenav.addEventListener('click', closeNav);
-        sidenavOverlay.addEventListener('click', closeNav); // Fermer en cliquant sur l'overlay
+        sidenavOverlay.addEventListener('click', closeNav);
     });
 </script>
