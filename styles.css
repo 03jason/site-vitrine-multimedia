@@ -138,7 +138,7 @@ td {
 
 .sidenav a:hover {
     color: #f1f1f1; /* Couleur du texte au survol */
-    background-color: #555; /* Couleur de fond au survol */
+    background-color: #135474; /* Couleur de fond au survol */
 }
 
 .sidenav .closebtn {
@@ -975,7 +975,7 @@ td {
 
 .best-products-sidebar .sidebar-description {
     font-size: 1.1em;
-    color: #dfdfdf; /* Noir pour le texte, ou un gris très foncé */
+    color: #ececec; /* Noir pour le texte, ou un gris très foncé */
     margin-bottom: 30px;
     line-height: 1.6;
 }
