@@ -1,41 +1,23 @@
 <?php
-// --- ZONE PHP : Connexion DB et récupération des données du produit ---
-
-// 1. Démarrage de la session (TOUJOURS la toute première chose dans un fichier PHP)
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-// --- LOGIQUE DE REDIRECTION VERS LA VERSION PUBLIC SI L'UTILISATEUR N'EST PAS ADMIN ---
-// Vérifie si l'utilisateur n'est PAS connecté OU n'a PAS le statut d'administrateur
 if (!isset($_SESSION['LOGIN']) || $_SESSION['LOGIN'] !== true) {
-    // Si pas connecté du tout => retour version publique
     $productNameForRedirect = $_GET['nom'] ?? '';
     header('Location: infoProduit.php?nom=' . urlencode($productNameForRedirect));
     exit();
-
 }
-// --- FIN DE LA LOGIQUE DE REDIRECTION VERS LA VERSION PUBLIC ---
-
-
-// 2. Inclusion du fichier de connexion à la base de données
 require_once 'connect.php';
 
-// 3. Récupération et validation du NOM du produit depuis l'URL
 $productName = $_GET['nom'] ?? null;
 
-// Gérer le cas où le nom du produit est manquant
 if ($productName === null) {
     $_SESSION['message_erreur'] = "Nom du produit manquant. Impossible d'afficher les détails en mode Admin.";
-    // Redirige vers une page listant tous les produits (admin ou non) pour éviter une boucle.
-    // Assurez-vous que cette page existe et gère les messages d'erreur.
-    header('Location: listAllProduct.php'); // Redirection vers le catalogue public par défaut en cas d'erreur grave.
+    header('Location: listAllProduct.php');
     exit();
 }
 
-// 4. Préparation et exécution de la requête SQL sécurisée (requête préparée)
-// La requête sélectionne toutes les colonnes pour un produit donné par son NOM
-$sql = "SELECT * FROM produits WHERE nom = ?"; // *** UTILISE BIEN 'nom' ***
+$sql = "SELECT * FROM produits WHERE nom = ?";
 $stmt = $connexionDB->prepare($sql);
 
 if ($stmt === false) {
@@ -45,25 +27,22 @@ if ($stmt === false) {
     exit();
 }
 
-$stmt->bind_param("s", $productName); // *** LIE LE PARAMÈTRE 'nom' (string) ***
+$stmt->bind_param("s", $productName);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// 5. Extraction des données du produit
 $productInfo = null;
 if ($result->num_rows > 0) {
     $productInfo = $result->fetch_assoc();
 } else {
     $_SESSION['message_erreur'] = "Produit introuvable.";
-    header('Location: listAllProduct.php'); // Redirige vers le catalogue public en cas d'absence
+    header('Location: listAllProduct.php');
     exit();
 }
 
-// 6. Fermeture de la déclaration et du résultat
 $stmt->close();
 $result->free();
 
-// 7. Préparation des variables pour l'affichage HTML
 $nom = htmlspecialchars($productInfo['nom'] ?? 'Produit Inconnu');
 $prix = htmlspecialchars(number_format($productInfo['prix'] ?? 0.00, 2, ',', ' ') . ' €');
 $description = htmlspecialchars($productInfo['description'] ?? 'Description non disponible.');
@@ -83,9 +62,8 @@ if (!empty($productInfo['date_ajout'])) {
 }
 
 
-$photo_produit_db = $productInfo['photo_produit'] ?? ''; // Nom de l'image de la DB
+$photo_produit_db = $productInfo['photo_produit'] ?? '';
 
-// Logique pour gérer le chemin de l'image
 $baseImagePath = 'ressources et consignes/img/';
 $placeholderImageUrl = $baseImagePath . 'placeholder.jpg';
 $finalImageUrl = $placeholderImageUrl;
@@ -111,7 +89,6 @@ if (!empty($photo_produit_db)) {
 $imageProduct = htmlspecialchars($finalImageUrl);
 
 include 'navBar.php';
-// --- FIN ZONE PHP ---
 ?>
 
 <!DOCTYPE html>

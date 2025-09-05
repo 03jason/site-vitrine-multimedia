@@ -1,33 +1,24 @@
 <?php
-// Démarrage de la session (si nécessaire pour la navBar ou autres)
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Inclusion de la barre de navigation
-require_once 'navBar.php'; // Assurez-vous que le chemin est correct
+require_once 'navBar.php';
 
-// Logique pour traiter le formulaire (simulée)
 $message_status = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Dans un vrai scénario, vous traiteriez les données, enverriez un email, etc.
-    // Pour cette version vitrine, nous redirigeons simplement.
 
-    // Simuler un traitement, vous pouvez stocker ces données ou les ignorer
     $name = htmlspecialchars($_POST['name'] ?? '');
     $email = htmlspecialchars($_POST['email'] ?? '');
     $subject = htmlspecialchars($_POST['subject'] ?? '');
     $message = htmlspecialchars($_POST['message'] ?? '');
 
-    // Stocker un message de succès en session avant la redirection
     $_SESSION['contact_success_message'] = "Votre requête a été envoyée avec succès (simulation).";
 
-    // Redirection vers la page d'accueil après "envoi"
     header('Location: index.php');
     exit();
 }
 
-// Vérifier si un message de succès est présent dans la session (par exemple, après une soumission réussie)
 if (isset($_SESSION['contact_success_message'])) {
     $message_status = '<div class="success-message">' . $_SESSION['contact_success_message'] . '</div>';
     unset($_SESSION['contact_success_message']); // Supprimer le message après l'affichage
@@ -43,7 +34,6 @@ if (isset($_SESSION['contact_success_message'])) {
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        /* Styles spécifiques à la page de contact */
         .contact-container {
             max-width: 800px;
             margin: 50px auto;
@@ -75,12 +65,12 @@ if (isset($_SESSION['contact_success_message'])) {
         .contact-form input[type="text"],
         .contact-form input[type="email"],
         .contact-form textarea {
-            width: calc(100% - 22px); /* 100% moins padding et border */
+            width: calc(100% - 22px);
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 1em;
-            box-sizing: border-box; /* Pour inclure padding et border dans la largeur */
+            box-sizing: border-box;
         }
 
         .contact-form textarea {
@@ -115,7 +105,6 @@ if (isset($_SESSION['contact_success_message'])) {
             font-weight: bold;
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
             .contact-container {
                 margin: 20px;

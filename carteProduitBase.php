@@ -1,17 +1,10 @@
 <?php
 
-// Assurez-vous que ces variables sont bien passées à cette page
 $imageProduit = htmlspecialchars($imageProduit ?? 'placeholder.jpg');
 $nomProduit = htmlspecialchars($nomProduit ?? 'Nom par défaut');
 $prixProduit = htmlspecialchars($prixProduit ?? '00.00 €');
-$evaluationProduit = htmlspecialchars($evaluationProduit ?? '0 / 5'); // Assurez-vous que c'est un chiffre
+$evaluationProduit = htmlspecialchars($evaluationProduit ?? '0 / 5');
 
-?>
-
-<?php
-// Cette page est incluse, elle ne doit donc pas avoir de balises <html>, <head>, etc.
-// Elle reçoit les variables suivantes de la page appelante (index.php ou listAllProduct.php):
-// $imageProduit, $nomProduit, $prixProduit, $evaluationProduit
 ?>
 
 <div class="custom-product-card">
@@ -23,14 +16,12 @@ $evaluationProduit = htmlspecialchars($evaluationProduit ?? '0 / 5'); // Assurez
         <p class="product-card-price"><?= $prixProduit ?></p>
         <div class="product-card-rating">
             <?php
-            // Affichage des étoiles basé sur l'évaluation (0 à 5)
-            // Assurez-vous que $evaluationProduit est un chiffre ici (ex: 4, non "4 / 5")
             $rating = intval($evaluationProduit);
             for ($i = 1; $i <= 5; $i++) {
                 if ($i <= $rating) {
-                    echo '<i class="fas fa-star filled"></i>'; // Étoile pleine
+                    echo '<i class="fas fa-star filled"></i>';
                 } else {
-                    echo '<i class="far fa-star"></i>'; // Étoile vide (contour)
+                    echo '<i class="far fa-star"></i>';
                 }
             }
             ?>

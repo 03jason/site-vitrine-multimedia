@@ -2,21 +2,14 @@
 
 require_once ('connect.php');
 
-// Assurez-vous que session_start() est LA PREMIERE chose
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Remarque: $demande6Produit n'est pas utilisé directement ici,
-// mais la requête $connexionDB->query("SELECT * FROM produits LIMIT 6 OFFSET 1;"); l'est.
-// Il est préférable de n'avoir qu'une seule requête pour la cohérence.
-// La requête récupère 6 produits à partir du deuxième (OFFSET 1)
 $sqlProduitsAccueil = "SELECT * FROM produits WHERE statut = 'disponible' LIMIT 6;";
 $result = $connexionDB->query($sqlProduitsAccueil);
 
 
-// --- Variables pour carteProduitBase.php ---
-// Ces variables sont initialisées ici mais seront écrasées dans la boucle.
 $imageProduit = null;
 $nomProduit = null;
 $prixProduit = null;
@@ -27,7 +20,7 @@ $marqueProduit = null;
 $dateAjoutProduit = null;
 $statutProduit = null;
 
-$carteUtilisee = 'carteProduitBase.php'; // Nom du fichier de la carte produit
+$carteUtilisee = 'carteProduitBase.php';
 
 include 'navBar.php';
 ?>
@@ -62,13 +55,10 @@ include 'navBar.php';
             <div class="product-grid">
                 <?php while ($infoCarteProduit = $result->fetch_assoc()): ?>
                     <?php
-                    // Logique pour déterminer le chemin de l'image du produit
                     $placeholderImagePath = "ressources et consignes/img/placeholder.jpg";
                     $filenameFromDb = $infoCarteProduit['photo_produit'] ?? '';
 
-                    // Vérification de l'existence du fichier sur le serveur
                     $serverFilePath = __DIR__ . '/ressources et consignes/img/' . $filenameFromDb;
-                    // Encodage du nom de fichier pour l'URL, surtout si des espaces ou caractères spéciaux sont présents
                     $browserUrlPath = 'ressources et consignes/img/' . rawurlencode($filenameFromDb);
 
                     $finalImagePath = file_exists($serverFilePath) ? $browserUrlPath : $placeholderImagePath;
@@ -85,7 +75,6 @@ include 'navBar.php';
                             $dateTimeObj = new DateTime($dateFromDb);
                             $formattedDate = $dateTimeObj->format('d/m/Y');
                         } catch (Exception $e) {
-                            // En cas d'erreur de date, $formattedDate reste 'N/A'
                         }
                     }
 
@@ -95,13 +84,11 @@ include 'navBar.php';
                     $dateAjoutProduit = htmlspecialchars($formattedDate);
                     $statutProduit = htmlspecialchars($infoCarteProduit['statut'] ?? '');
 
-                    // Incluez la carte du produit
                     include $carteUtilisee;
                     ?>
                 <?php endwhile; ?>
 
                 <?php
-                // N'oubliez pas de libérer le jeu de résultats après la boucle
                 if ($result) {
                     $result->free();
                 }

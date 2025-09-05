@@ -10,7 +10,6 @@ if (empty($_SESSION['LOGIN'])) {
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) { http_response_code(400); exit('ID manquant'); }
 
-// Récupérer le produit
 $stmt = $connexionDB->prepare("
   SELECT id, nom, description, prix, quantite_en_stock, categorie, marque,
          date_ajout, evaluation_moyenne, statut, photo_produit
@@ -32,7 +31,6 @@ $isGerant = !empty($_SESSION['ADMIN']) && $_SESSION['ADMIN'] === true;
 <form method="post" action="process_edit_product.php" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
 
-    <!-- Toujours modifiable -->
     <label>Description<br>
         <textarea name="description" required><?= htmlspecialchars($p['description'], ENT_QUOTES) ?></textarea>
     </label><br>

@@ -5,24 +5,16 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Inclusion du fichier de connexion à la base de données
 require_once ('connect.php');
-
-// --- 3. Logique de tri des produits (côté serveur) ---
-
-// 3.1. Définition des paramètres de tri par défaut
 $currentSortBy = $_GET['sort_by'] ?? 'nom';
 $currentOrder = $_GET['order'] ?? 'asc';
 
-// 3.2. Sécurité : Liste blanche des colonnes et de l'ordre
-// Suppression de 'id_produit' des colonnes autorisées pour le tri
 $allowedSortColumns = [
     'nom', 'description', 'prix', 'quantite_en_stock', 'categorie',
     'marque', 'date_ajout', 'evaluation_moyenne', 'statut'
 ];
 $allowedSortOrders = ['asc', 'desc'];
 
-// 3.3. Validation des paramètres reçus de l'URL
 if (!in_array($currentSortBy, $allowedSortColumns)) {
     $currentSortBy = 'nom';
 }
@@ -30,8 +22,6 @@ if (!in_array($currentOrder, $allowedSortOrders)) {
     $currentOrder = 'asc';
 }
 
-// 3.4. Construction de la requête SQL dynamique
-// ATTENTION : 'id_produit' est supprimé du SELECT
 $demandeProduits = "SELECT nom, description, prix, quantite_en_stock, categorie, marque, date_ajout, evaluation_moyenne, statut, photo_produit FROM produits ORDER BY " . $currentSortBy . " " . $currentOrder;
 $result = $connexionDB->query($demandeProduits);
 
@@ -42,27 +32,21 @@ if ($result === false) {
 }
 
 
-// --- 4. Initialisation des variables pour les cartes de produits ---
 $imageProduit = null;
 $nomProduit = null;
 $prixProduit = null;
 $evaluationProduit = null;
-// Les variables suivantes ne sont pas nécessaires pour la carte de base, mais gardées pour cohérence si votre carte les utilise
 $quantiteProduit = null;
 $categorieProduit = null;
 $marqueProduit = null;
 $dateAjoutProduit = null;
 $statutProduit = null;
-// Suppression de $productId car il n'est pas nécessaire et n'est plus récupéré
-// $productId = null;
 
-// Définition du chemin de base pour les images (le dossier sur le serveur)
 $baseImagePath = 'ressources et consignes/img/';
 $placeholderImageUrl = $baseImagePath . 'placeholder.jpg';
 
 $carteUtilisee = 'carteProduitBase.php' ;
 
-// 5. Inclusion de la barre de navigation
 include 'navBar.php';
 ?>
 
@@ -114,7 +98,6 @@ include 'navBar.php';
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while ($infoCarteProduit = $result->fetch_assoc()): ?>
                 <?php
-                // --- Préparation des données pour la carte de produit (LOGIQUE NON TOUCHÉE) ---
 
                 $filenameFromDb = $infoCarteProduit['photo_produit'] ?? '';
                 $finalImageUrl = $placeholderImageUrl;
@@ -142,8 +125,6 @@ include 'navBar.php';
                 $nomProduit = htmlspecialchars($infoCarteProduit['nom'] ?? 'Nom par défaut');
                 $prixProduit = htmlspecialchars(number_format($infoCarteProduit['prix'] ?? 0, 2, ',', ' ') . ' €');
                 $evaluationProduit = htmlspecialchars($infoCarteProduit['evaluation_moyenne'] ?? '0');
-                // $productId est supprimé ici
-                // $productId = htmlspecialchars($infoCarteProduit['id_produit'] ?? ''); // LIGNE SUPPRIMÉE
 
                 $dateFromDb = $infoCarteProduit['date_ajout'] ?? '';
                 if (!empty($dateFromDb)) {
@@ -153,10 +134,6 @@ include 'navBar.php';
                     $formattedDate = 'Date inconnue';
                 }
                 $dateAjoutProduit = htmlspecialchars($formattedDate);
-
-                // --- FIN LOGIQUE NON TOUCHÉE ---
-
-                // Inclusion du fichier de la carte
                 include $carteUtilisee;
                 ?>
             <?php endwhile; ?>

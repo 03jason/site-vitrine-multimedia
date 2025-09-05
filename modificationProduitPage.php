@@ -1,25 +1,13 @@
 <?php
-// --- ZONE PHP : Récupération des données du produit à modifier ---
-
-// 1. Démarrage de la session
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-// 2. Vérification des droits : autoriser admin ET assistant
 if (!isset($_SESSION['LOGIN']) || $_SESSION['LOGIN'] !== true) {
-    // Si pas connecté du tout -> login obligatoire
     header('Location: loginPage.php');
     exit();
 }
-
-
-
-// 3. Inclusion du fichier de connexion à la base de données (inchangé)
 require_once 'connect.php';
 
-// 4. Récupération et validation du NOM du produit depuis l'URL
-// CHANGEMENT ICI : on récupère 'nom' au lieu de 'id'
 $productName = $_GET['nom'] ?? null;
 
 if ($productName === null || empty($productName)) {
@@ -27,9 +15,6 @@ if ($productName === null || empty($productName)) {
     header('Location: listAllProductAdmin.php');
     exit();
 }
-
-// 5. Préparation et exécution de la requête SQL pour récupérer les infos du produit
-// CHANGEMENT ICI : la condition WHERE utilise 'nom'
 $sql = "SELECT *  FROM produits WHERE nom = ?";
 $stmt = $connexionDB->prepare($sql);
 
@@ -40,23 +25,19 @@ if ($stmt === false) {
     exit();
 }
 
-// CHANGEMENT ICI : on lie $productName (string)
-$stmt->bind_param("s", $productName); // "s" pour string (Nom du produit)
+$stmt->bind_param("s", $productName);
 $stmt->execute();
 $result = $stmt->get_result();
 $productInfo = $result->fetch_assoc();
 
-// Gérer le cas où le produit n'est pas trouvé
 if ($productInfo === null) {
     $_SESSION['message_erreur'] = "Produit introuvable pour le nom spécifié: " . htmlspecialchars($productName) . ".";
     header('Location: listAllProductAdmin.php');
     exit();
 }
 
-// 6. Fermeture de la déclaration (inchangé)
 $stmt->close();
 
-// 7. Préparation des variables pour l'affichage HTML du formulaire (inchangé, sauf que $nom vient de $productInfo)
 $nom = htmlspecialchars($productInfo['nom'] ?? 'Produit Inconnu');
 $prix = htmlspecialchars($productInfo['prix'] ?? 0.00);
 $description = htmlspecialchars($productInfo['description'] ?? 'Description non disponible.');
@@ -64,7 +45,6 @@ $quantite_en_stock = htmlspecialchars($productInfo['quantite_en_stock'] ?? 0);
 $evaluation_moyenne = htmlspecialchars($productInfo['evaluation_moyenne'] ?? 0.0);
 $photo_produit_db = $productInfo['photo_produit'] ?? '';
 
-// Logique pour gérer le chemin de l'image (inchangé)
 $baseImagePath = 'ressources et consignes/img/';
 $placeholderImageUrl = $baseImagePath . 'placeholder.jpg';
 $finalImageUrl = $placeholderImageUrl;
@@ -89,12 +69,8 @@ if (!empty($photo_produit_db)) {
 }
 $imageProduct = htmlspecialchars($finalImageUrl);
 
-
-
 $isAdmin = isset($_SESSION['ADMIN']) && $_SESSION['ADMIN'] === true;
 
-
-// --- FIN ZONE PHP ---
 ?>
 
 <!DOCTYPE html>
@@ -114,7 +90,6 @@ $isAdmin = isset($_SESSION['ADMIN']) && $_SESSION['ADMIN'] === true;
     <h1 class="page-title">Modifier le produit : <span><?= $nom ?></span></h1>
 
     <?php
-    // Affichage des messages de succès ou d'erreur
     if (isset($_SESSION['message_succes'])): ?>
         <div class="message-success">
             <?= $_SESSION['message_succes'];

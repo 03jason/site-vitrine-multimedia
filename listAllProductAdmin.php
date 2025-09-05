@@ -5,47 +5,38 @@ require_once ('connect.php');
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-// Vérification de l'authentification et du rôle admin (TRÈS IMPORTANT pour une page admin)
-// Assurez-vous que $_SESSION['ADMIN'] est bien défini lors de la connexion admin
 if (!isset($_SESSION['LOGIN']) || $_SESSION['LOGIN'] !== true ) {
     header('Location: loginPage.php'); // Rediriger si non connecté ou non admin
     exit();
 }
 
-// --- LOGIQUE DE TRI CÔTÉ SERVEUR ---
 $currentSortBy = $_GET['sort_by'] ?? 'nom'; // Colonne par défaut
 $currentOrder = $_GET['order'] ?? 'asc'; // Direction par défaut
 
-// S'assurer que les valeurs de tri sont valides pour éviter les injections SQL
-// 'description' et 'photo_produit' sont implicitement exclues de l'affichage, pas de la sélection.
-// 'id' est inclus ici pour permettre le tri par ID si désiré, même si la colonne n'est pas affichée.
 $allowedSortColumns = ['id', 'nom', 'prix', 'quantite_en_stock', 'categorie', 'marque', 'date_ajout', 'evaluation_moyenne', 'statut', 'description', 'photo_produit']; // Permet de trier sur toutes les colonnes
 if (!in_array($currentSortBy, $allowedSortColumns)) {
-    $currentSortBy = 'nom'; // Réinitialiser si la colonne n'est pas autorisée
+    $currentSortBy = 'nom';
 }
 
 $allowedOrderDirections = ['asc', 'desc'];
 if (!in_array($currentOrder, $allowedOrderDirections)) {
-    $currentOrder = 'asc'; // Réinitialiser si la direction n'est pas autorisée
+    $currentOrder = 'asc';
 }
 
-// Requête SQL avec ORDER BY dynamique - Utilisation de SELECT * comme demandé
 $sql = "SELECT * FROM produits ORDER BY " . $currentSortBy . " " . strtoupper($currentOrder) . ";";
 
 $result = $connexionDB->query($sql);
 
 if ($result === false) {
-    // Gérer l'erreur de requête si nécessaire
     error_log("Erreur lors de la récupération des produits: " . $connexionDB->error);
-    $products = []; // Initialiser un tableau vide pour éviter les erreurs d'itération
+    $products = [];
     $_SESSION['message_erreur'] = "Une erreur est survenue lors du chargement des produits. Veuillez réessayer plus tard.";
 } else {
     $products = $result->fetch_all(MYSQLI_ASSOC); // Récupérer tous les résultats en une fois
 }
 
 
-include 'navBar.php'; // Inclusion de la barre de navigation
+include 'navBar.php';
 ?>
 
 <!DOCTYPE html>
@@ -99,7 +90,7 @@ include 'navBar.php'; // Inclusion de la barre de navigation
     <?php if (isset($_SESSION['message_erreur'])): ?>
         <div class="error-message">
             <?= htmlspecialchars($_SESSION['message_erreur']); ?>
-            <?php unset($_SESSION['message_erreur']); // Supprime le message après affichage ?>
+            <?php unset($_SESSION['message_erreur']);  ?>
         </div>
     <?php endif; ?>
 

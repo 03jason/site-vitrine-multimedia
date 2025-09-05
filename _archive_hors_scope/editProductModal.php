@@ -3,7 +3,7 @@
         <span class="close-button" aria-label="Fermer la fenêtre modale">&times;</span>
         <h2 class="modal-title">Modifier le produit : <span id="modalProductName"><?= htmlspecialchars($nom ?? '') ?></span></h2>
 
-        <form id="editProductForm" action="process_edit_product.php" method="POST" enctype="multipart/form-data">
+        <form id="editProductForm" action="../process_edit_product.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="product_id" id="modalProductId" value="<?= htmlspecialchars($productId ?? '') ?>">
             <input type="hidden" name="old_product_image" id="modalOldProductImage" value="<?= htmlspecialchars($photo_produit_db ?? '') ?>">
 

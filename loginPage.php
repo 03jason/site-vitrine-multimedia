@@ -22,11 +22,10 @@ if (session_status() == PHP_SESSION_NONE) {
 <main class="login-page-main"> <div class="login-container card-shadow"> <h2 class="form-title">Connectez-vous</h2>
 
         <?php
-        // Afficher les messages d'erreur ou de succès s'ils existent
         if (isset($_SESSION['login_message'])) {
             $messageClass = strpos($_SESSION['login_message'], 'succès') !== false ? 'success-message' : 'error-message';
             echo '<div class="' . $messageClass . '">' . htmlspecialchars($_SESSION['login_message']) . '</div>';
-            unset($_SESSION['login_message']); // Supprimer le message après l'affichage
+            unset($_SESSION['login_message']);
         }
         ?>
 

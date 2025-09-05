@@ -9,7 +9,7 @@ if($_SESSION['LOGIN'] === true){
     $_SESSION['LOGIN'] = false;
     $_SESSION['ADMIN'] = false ;
 
-    session_destroy(); // Détruit la session sur le serveur
+    session_destroy();
     header('Location: index.php');
     exit();
 }

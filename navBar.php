@@ -1,11 +1,7 @@
 <?php
-// IL EST CRUCIAL QUE CECI SOIT LA TOUTE PREMIERE CHOSE DANS VOTRE FICHIER (avant tout HTML)
-// Si ce header.php est inclus dans d'autres fichiers, assurez-vous que session_start()
-// n'est appelé qu'une seule fois au tout début de l'exécution de la page.
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
 ?>
 
 <header class="navbar">
@@ -24,16 +20,11 @@ if (session_status() == PHP_SESSION_NONE) {
             <button class="icon-button" id="userIconTrigger"><i class="fas fa-user"></i></button>
             <div id="authDropdown" class="auth-dropdown">
                 <?php
-
-                // Vérifier si l'utilisateur est actuellement connecté
                 if (isset($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true) {
-                    // Si l'utilisateur est connecté, afficher le bouton de déconnexion.
-                    // Il doit pointer vers votre script logout.php avec l'action 'logout'.
                     echo '<a href="logout.php?action=logout" class="auth-button logout-button">Déconnexion</a>';
                 } else {
                     echo '<a href="loginPage.php" class="button login-button">Se connecter</a>';
                 }
-
                 ?>
 
             </div>
@@ -41,15 +32,12 @@ if (session_status() == PHP_SESSION_NONE) {
     </div>
 </header>
 
-
-<!-- La side barre sur le coté gauche -->
 <nav id="mySidenav" class="sidenav">
 
 
 
     <?php
     if (!empty($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true) {
-        // On affiche l'identité de l'utilisateur
         $role = (!empty($_SESSION['ADMIN']) && $_SESSION['ADMIN'] === true) ? 'Gérant' : 'Assistant';
         $username = $_SESSION['USERNAME'] ?? 'Utilisateur';
         echo '<div class="user-status"> <strong>' . htmlspecialchars($username) . '</strong> (' . $role . ')</div>';

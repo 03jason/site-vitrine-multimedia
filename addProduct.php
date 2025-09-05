@@ -1,8 +1,6 @@
 <?php
-// addProduct.php (TRAITEMENT)
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
-// accès réservé gérant
 if (empty($_SESSION['LOGIN']) || empty($_SESSION['ADMIN'])) {
     $_SESSION['message_erreur'] = "Accès non autorisé.";
     header('Location: index.php'); exit;
@@ -14,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: addProductPage.php'); exit;
 }
 
-// 1) Récup/validation
 $nom   = trim($_POST['nom'] ?? '');
 $description = trim($_POST['description'] ?? '');
 $prix  = (float)($_POST['prix'] ?? 0);
@@ -23,7 +20,6 @@ $categorie = trim($_POST['categorie'] ?? '');
 $marque    = trim($_POST['marque'] ?? '');
 $statut    = $_POST['statut'] ?? 'disponible';
 
-// statut autorisé par la consigne
 $statutOk = in_array($statut, ['disponible','en rupture'], true);
 
 if ($nom === '' || $description === '' || $prix <= 0 || $qte < 0 || !$statutOk) {
@@ -31,7 +27,6 @@ if ($nom === '' || $description === '' || $prix <= 0 || $qte < 0 || !$statutOk) 
     header('Location: addProductPage.php'); exit;
 }
 
-// 2) Optionnel : empêcher doublon de nom
 $sql_check = "SELECT COUNT(*) as c FROM produits WHERE nom = ?";
 $stmt = $connexionDB->prepare($sql_check);
 $stmt->bind_param("s", $nom);
@@ -45,7 +40,6 @@ if ($exists > 0) {
     header('Location: addProductPage.php'); exit;
 }
 
-// 3) Upload image (optionnel)
 $photo = null;
 if (isset($_FILES['photo_produit']) && $_FILES['photo_produit']['error'] === UPLOAD_ERR_OK) {
     $tmp  = $_FILES['photo_produit']['tmp_name'];
@@ -64,9 +58,7 @@ if (isset($_FILES['photo_produit']) && $_FILES['photo_produit']['error'] === UPL
         if (move_uploaded_file($tmp, $new)) {
             $photo = $new; // on stocke le chemin relatif complet
         }
-        // si move échoue : $photo reste null -> insertion sans image
     }
-    // si type/taille non valides : on ignore (image optionnelle)
 }
 
 // 4) Insertion

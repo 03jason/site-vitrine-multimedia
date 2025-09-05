@@ -1,16 +1,14 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) { session_start(); }
 
-// accès réservé gérant
 if (empty($_SESSION['LOGIN']) || empty($_SESSION['ADMIN'])) {
     $_SESSION['message_erreur'] = "Accès non autorisé. Vous devez être administrateur pour ajouter un produit.";
     header('Location: index.php'); exit();
 }
 
-require_once 'connect.php'; // si besoin d'afficher qqch lié à la DB
+require_once 'connect.php';
 include 'navBar.php';
 
-// messages flash
 $message = '';
 if (!empty($_SESSION['message_succes'])) {
     $message = '<p class="message success">'.htmlspecialchars($_SESSION['message_succes']).'</p>';
@@ -38,7 +36,6 @@ if (!empty($_SESSION['message_succes'])) {
             <div class="form-message"><?= $message ?></div>
         <?php endif; ?>
 
-        <!-- IMPORTANT: on envoie vers addProduct.php -->
         <form action="addProduct.php" method="POST" enctype="multipart/form-data" class="add-product-form">
             <div class="form-group">
                 <label for="nom">Nom du produit <span class="required">*</span></label>
@@ -69,14 +66,6 @@ if (!empty($_SESSION['message_succes'])) {
                 <label for="marque">Marque</label>
                 <input type="text" id="marque" name="marque" value="<?= htmlspecialchars($_POST['marque'] ?? '') ?>">
             </div>
-
-            <!-- On peut retirer évaluation_moyenne : forcée à 0 côté SQL -->
-            <!--
-      <div class="form-group">
-        <label for="evaluation_moyenne">Évaluation moyenne (0-5)</label>
-        <input type="number" id="evaluation_moyenne" name="evaluation_moyenne" step="0.1" min="0" max="5" value="<?= htmlspecialchars($_POST['evaluation_moyenne'] ?? '0.0') ?>">
-      </div>
-      -->
 
             <div class="form-group">
                 <label for="photo_produit">Photo du produit (optionnel)</label>

@@ -6,34 +6,22 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// --- LOGIQUE DE REDIRECTION VERS LA VERSION ADMIN SI L'UTILISATEUR EST ADMIN ---
-// Vérifie si l'utilisateur est connecté ET s'il a le statut d'administrateur
 if (isset($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true) {
-    // Si connecté (assistant ou gérant), on envoie vers la page admin
     $productNameForRedirect = $_GET['nom'] ?? '';
     header('Location: infoProduitAdmin.php?nom=' . urlencode($productNameForRedirect));
     exit();
 }
-
-// --- FIN DE LA LOGIQUE DE REDIRECTION VERS LA VERSION ADMIN ---
-
-
-// 2. Inclusion du fichier de connexion à la base de données
 require_once 'connect.php';
 
-// 3. Récupération et validation du NOM du produit depuis l'URL
 $productName = $_GET['nom'] ?? null;
 
-// Gérer le cas où le nom du produit est manquant
 if ($productName === null) {
     $_SESSION['message_erreur'] = "Nom du produit manquant. Impossible d'afficher les détails.";
-    header('Location: listAllProduct.php'); // Rediriger vers le catalogue public
+    header('Location: listAllProduct.php');
     exit();
 }
 
-// 4. Préparation et exécution de la requête SQL sécurisée (requête préparée)
-// La requête sélectionne toutes les colonnes pour un produit donné par son NOM
-$sql = "SELECT * FROM produits WHERE nom = ?"; // *** UTILISE BIEN 'nom' ***
+$sql = "SELECT * FROM produits WHERE nom = ?";
 $stmt = $connexionDB->prepare($sql);
 
 if ($stmt === false) {
@@ -43,11 +31,10 @@ if ($stmt === false) {
     exit();
 }
 
-$stmt->bind_param("s", $productName); // *** LIE LE PARAMÈTRE 'nom' (string) ***
+$stmt->bind_param("s", $productName);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// 5. Extraction des données du produit
 $productInfo = null;
 if ($result->num_rows > 0) {
     $productInfo = $result->fetch_assoc();
@@ -57,11 +44,9 @@ if ($result->num_rows > 0) {
     exit();
 }
 
-// 6. Fermeture de la déclaration et du résultat
 $stmt->close();
 $result->free();
 
-// 7. Préparation des variables pour l'affichage HTML
 $nom = htmlspecialchars($productInfo['nom'] ?? 'Produit Inconnu');
 $prix = htmlspecialchars(number_format($productInfo['prix'] ?? 0.00, 2, ',', ' ') . ' €');
 $description = htmlspecialchars($productInfo['description'] ?? 'Description non disponible.');
@@ -70,9 +55,8 @@ $evaluation_moyenne = htmlspecialchars($productInfo['evaluation_moyenne'] ?? '0'
 $categorie = htmlspecialchars($productInfo['categorie'] ?? 'Non spécifiée');
 $marque = htmlspecialchars($productInfo['marque'] ?? 'Non spécifiée');
 
-$photo_produit_db = $productInfo['photo_produit'] ?? ''; // Nom de l'image de la DB
+$photo_produit_db = $productInfo['photo_produit'] ?? '';
 
-// Logique pour gérer le chemin de l'image (reprise de listAllProduct.php)
 $baseImagePath = 'ressources et consignes/img/';
 $placeholderImageUrl = $baseImagePath . 'placeholder.jpg';
 $finalImageUrl = $placeholderImageUrl;
