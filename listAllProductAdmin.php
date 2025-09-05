@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Vérification de l'authentification et du rôle admin (TRÈS IMPORTANT pour une page admin)
 // Assurez-vous que $_SESSION['ADMIN'] est bien défini lors de la connexion admin
-if (!isset($_SESSION['LOGIN']) || $_SESSION['LOGIN'] !== true || !isset($_SESSION['ADMIN']) || $_SESSION['ADMIN'] !== true) {
+if (!isset($_SESSION['LOGIN']) || $_SESSION['LOGIN'] !== true ) {
     header('Location: loginPage.php'); // Rediriger si non connecté ou non admin
     exit();
 }

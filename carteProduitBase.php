@@ -35,6 +35,6 @@ $evaluationProduit = htmlspecialchars($evaluationProduit ?? '0 / 5'); // Assurez
             }
             ?>
         </div>
-        <a href="infoProduit.php?nom=<?= urlencode($nomProduit) ?>" class="btn custom-action-button product-details-button">Détails Produit</a>
+        <a href="infoProduit.php?nom=<?= urlencode($nomProduit) ?>" class="btn custom-action-button product-details-button">Voir plus</a>
     </div>
 </div>

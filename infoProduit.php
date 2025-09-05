@@ -8,13 +8,13 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // --- LOGIQUE DE REDIRECTION VERS LA VERSION ADMIN SI L'UTILISATEUR EST ADMIN ---
 // Vérifie si l'utilisateur est connecté ET s'il a le statut d'administrateur
-if (isset($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true && isset($_SESSION['ADMIN']) && $_SESSION['ADMIN'] === true) {
-    // Si oui, on récupère le nom du produit depuis l'URL actuelle
+if (isset($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true) {
+    // Si connecté (assistant ou gérant), on envoie vers la page admin
     $productNameForRedirect = $_GET['nom'] ?? '';
-    // Et on redirige vers infoProduitAdmin.php en passant le même nom de produit
     header('Location: infoProduitAdmin.php?nom=' . urlencode($productNameForRedirect));
-    exit(); // TRÈS IMPORTANT : arrête l'exécution du script après la redirection
+    exit();
 }
+
 // --- FIN DE LA LOGIQUE DE REDIRECTION VERS LA VERSION ADMIN ---
 
 
@@ -141,15 +141,6 @@ include 'navBar.php';
             <p class="product-detail-description"><?= nl2br($description) ?></p>
 
             <div class="product-detail-price"><?= $prix ?></div>
-
-            <div class="product-detail-stock-status">
-                <span class="stock-label">Stock :</span>
-                <?php if ($quantite_en_stock > 0): ?>
-                    <span class="in-stock"><i class="fas fa-check-circle"></i> En stock (<?= $quantite_en_stock ?> unités)</span>
-                <?php else: ?>
-                    <span class="out-of-stock"><i class="fas fa-times-circle"></i> Rupture de stock</span>
-                <?php endif; ?>
-            </div>
 
 
         </div>

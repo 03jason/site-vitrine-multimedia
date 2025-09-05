@@ -48,6 +48,7 @@ if ($motDePasseSaisiHashe === $motPasseAssocie && $user == 'gerant') {
 
     $_SESSION['LOGIN'] = true ;
     $_SESSION['ADMIN'] = true ;
+
     header('Location: index.php');
         exit();
 } elseif ($motDePasseSaisiHashe === $motPasseAssocie) {
@@ -55,6 +56,7 @@ if ($motDePasseSaisiHashe === $motPasseAssocie && $user == 'gerant') {
     $_SESSION['LOGIN'] = true ;
     $_SESSION['ADMIN'] = false ;
     header('Location: index.php');
+
     exit();
 
 } else {

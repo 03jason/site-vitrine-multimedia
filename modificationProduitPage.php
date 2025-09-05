@@ -6,11 +6,14 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Vérification des droits d'administrateur (inchangé)
-if (!isset($_SESSION['LOGIN']) || $_SESSION['LOGIN'] !== true || !isset($_SESSION['ADMIN']) || $_SESSION['ADMIN'] !== true) {
+// 2. Vérification des droits : autoriser admin ET assistant
+if (!isset($_SESSION['LOGIN']) || $_SESSION['LOGIN'] !== true) {
+    // Si pas connecté du tout -> login obligatoire
     header('Location: loginPage.php');
     exit();
 }
+
+
 
 // 3. Inclusion du fichier de connexion à la base de données (inchangé)
 require_once 'connect.php';
@@ -86,6 +89,11 @@ if (!empty($photo_produit_db)) {
 }
 $imageProduct = htmlspecialchars($finalImageUrl);
 
+
+
+$isAdmin = isset($_SESSION['ADMIN']) && $_SESSION['ADMIN'] === true;
+
+
 // --- FIN ZONE PHP ---
 ?>
 
@@ -127,12 +135,14 @@ $imageProduct = htmlspecialchars($finalImageUrl);
 
         <div class="form-group">
             <label for="edit_nom" class="form-label">Nom du produit:</label>
-            <input type="text" id="edit_nom" name="nom" class="form-input" value="<?= $nom ?>" required>
+            <input type="text" id="edit_nom" name="nom" class="form-input"
+                   value="<?= $nom ?>" <?= $isAdmin ? '' : 'readonly' ?>>
         </div>
 
         <div class="form-group">
             <label for="edit_prix" class="form-label">Prix (€):</label>
-            <input type="number" id="edit_prix" name="prix" step="0.01" class="form-input" value="<?= $prix ?>" required>
+            <input type="number" id="edit_prix" name="prix" step="0.01" class="form-input"
+                   value="<?= $prix ?>" <?= $isAdmin ? '' : 'readonly' ?>>
         </div>
 
         <div class="form-group">
@@ -142,12 +152,14 @@ $imageProduct = htmlspecialchars($finalImageUrl);
 
         <div class="form-group">
             <label for="edit_quantite" class="form-label">Quantité en stock:</label>
-            <input type="number" id="edit_quantite" name="quantite_en_stock" class="form-input" value="<?= $quantite_en_stock ?>" required>
+            <input type="number" id="edit_quantite" name="quantite_en_stock" class="form-input"
+                   value="<?= $quantite_en_stock ?>" <?= $isAdmin ? '' : 'readonly' ?>>
         </div>
 
         <div class="form-group">
             <label for="edit_evaluation" class="form-label">Évaluation moyenne (0-5):</label>
-            <input type="number" id="edit_evaluation" name="evaluation_moyenne" step="0.1" min="0" max="5" class="form-input" value="<?= $evaluation_moyenne ?>">
+            <input type="number" id="edit_evaluation" name="evaluation_moyenne" step="0.1" min="0" max="5" class="form-input"
+                   value="<?= $evaluation_moyenne ?>" <?= $isAdmin ? '' : 'readonly' ?>>
         </div>
 
         <div class="form-group image-upload-group">
@@ -156,8 +168,9 @@ $imageProduct = htmlspecialchars($finalImageUrl);
                 <img id="currentProductImage" src="<?= $imageProduct ?>" alt="Image actuelle du produit">
             </div>
             <label for="edit_image" class="form-label file-input-label">Changer l'image:</label>
-            <input type="file" id="edit_image" name="product_image" accept="image/*" class="file-input">
+            <input type="file" id="edit_image" name="product_image" accept="image/*" class="file-input" <?= $isAdmin ? '' : 'disabled' ?>>
         </div>
+
 
         <div class="form-actions">
             <button type="submit" class="primary-button">Sauvegarder les modifications</button>

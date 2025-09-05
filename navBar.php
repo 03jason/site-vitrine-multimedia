@@ -19,10 +19,7 @@ if (session_status() == PHP_SESSION_NONE) {
         </a>
     </div>
     <div class="navbar-right">
-        <div class="lang-selector">
-            <button class="lang-button active">FR</button>
-            <button class="lang-button">NL</button>
-        </div>
+
         <div class="user-auth-wrapper">
             <button class="icon-button" id="userIconTrigger"><i class="fas fa-user"></i></button>
             <div id="authDropdown" class="auth-dropdown">
@@ -47,6 +44,20 @@ if (session_status() == PHP_SESSION_NONE) {
 
 <!-- La side barre sur le coté gauche -->
 <nav id="mySidenav" class="sidenav">
+
+
+
+    <?php
+    if (!empty($_SESSION['LOGIN']) && $_SESSION['LOGIN'] === true) {
+        // On affiche l'identité de l'utilisateur
+        $role = (!empty($_SESSION['ADMIN']) && $_SESSION['ADMIN'] === true) ? 'Gérant' : 'Assistant';
+        $username = $_SESSION['USERNAME'] ?? 'Utilisateur';
+        echo '<div class="user-status"> <strong>' . htmlspecialchars($username) . '</strong> (' . $role . ')</div>';
+    }
+    ?>
+
+
+
     <a href="javascript:void(0)" class="closebtn" id="closeSidenav">&times;</a> <a href="index.php">Accueil</a>
     <a href="listAllProduct.php">Tous nos produits</a>
     <?php

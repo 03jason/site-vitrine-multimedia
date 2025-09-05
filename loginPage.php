@@ -33,16 +33,15 @@ if (session_status() == PHP_SESSION_NONE) {
         <form action="login.php" method="POST" class="login-form">
             <div class="form-group"> <label for="username"><i class="fas fa-user"></i> Identifiant ou Email</label>
                 <input type="text" id="username" name="username" required aria-label="Identifiant ou Email">
+
+
             </div>
             <div class="form-group">
                 <label for="password"><i class="fas fa-lock"></i> Mot de passe</label>
                 <input type="password" id="password" name="password" required aria-label="Mot de passe">
             </div>
             <button type="submit" class="btn primary-button submit-button">Se connecter</button> </form>
-        <div class="form-footer">
-            <a href="index.php" class="text-link">Mot de passe oublié ?</a>
-            <p>Pas encore de compte ? <a href="#" class="text-link register-link">Inscrivez-vous ici</a></p>
-        </div>
+
     </div>
 </main>
 

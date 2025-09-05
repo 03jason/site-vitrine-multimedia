@@ -11,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
 // mais la requête $connexionDB->query("SELECT * FROM produits LIMIT 6 OFFSET 1;"); l'est.
 // Il est préférable de n'avoir qu'une seule requête pour la cohérence.
 // La requête récupère 6 produits à partir du deuxième (OFFSET 1)
-$sqlProduitsAccueil = "SELECT * FROM produits LIMIT 6 OFFSET 1;";
+$sqlProduitsAccueil = "SELECT * FROM produits WHERE statut = 'disponible' LIMIT 6;";
 $result = $connexionDB->query($sqlProduitsAccueil);
 
 
@@ -38,9 +38,14 @@ include 'navBar.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site Vitrine JF</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Référencement  -->
+    <meta name="description" content="IT_SHP : votre vitrine de produits multimédias et électroniques. Découvrez notre sélection.">
+    <meta name="keywords" content="technologie, électronique, multimédia, IT_SHP">
+    <title>IT_SHP - Accueil</title>
+
 </head>
 <body>
 

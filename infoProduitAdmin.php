@@ -8,12 +8,12 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // --- LOGIQUE DE REDIRECTION VERS LA VERSION PUBLIC SI L'UTILISATEUR N'EST PAS ADMIN ---
 // Vérifie si l'utilisateur n'est PAS connecté OU n'a PAS le statut d'administrateur
-if (!isset($_SESSION['LOGIN']) || $_SESSION['LOGIN'] !== true || !isset($_SESSION['ADMIN']) || $_SESSION['ADMIN'] !== true) {
-    // Si non, on récupère le nom du produit depuis l'URL actuelle
+if (!isset($_SESSION['LOGIN']) || $_SESSION['LOGIN'] !== true) {
+    // Si pas connecté du tout => retour version publique
     $productNameForRedirect = $_GET['nom'] ?? '';
-    // Et on redirige vers infoProduit.php en passant le même nom de produit
     header('Location: infoProduit.php?nom=' . urlencode($productNameForRedirect));
-    exit(); // TRÈS IMPORTANT : arrête l'exécution du script après la redirection
+    exit();
+
 }
 // --- FIN DE LA LOGIQUE DE REDIRECTION VERS LA VERSION PUBLIC ---
 
@@ -154,14 +154,7 @@ include 'navBar.php';
 
             <div class="product-detail-price"><?= $prix ?></div>
 
-            <div class="product-detail-stock-status">
-                <span class="stock-label">Stock :</span>
-                <?php if ($quantite_en_stock > 0): ?>
-                    <span class="in-stock"><i class="fas fa-check-circle"></i> En stock (<?= $quantite_en_stock ?> unités)</span>
-                <?php else: ?>
-                    <span class="out-of-stock"><i class="fas fa-times-circle"></i> Rupture de stock</span>
-                <?php endif; ?>
-            </div>
+
 
             <div class="product-detail-date-added">
                 <span class="date-label"><i class="fas fa-calendar-alt"></i> Ajouté le :</span>
